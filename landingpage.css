@@ -2,11 +2,11 @@
 :root {
     --primary-bg: #0a0a0a;
     --secondary-bg: #121212;
-    --text-primary: #f8f8f8;
-    --text-secondary: #a0a0a0;
-    --accent-color: #004D61; /* Deep teal instead of yellow */
-    --accent-secondary: #822659; /* Deep ruby for contrast */
-    --portal-glow: #003845;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --accent-color: #00c8ff; /* Bright cyan */
+    --accent-secondary: #ff3d71; /* Vibrant pink */
+    --portal-glow: #005066;
     --door-color: #1a1a1a;
     --loading-bar-bg: #2a2a2a;
 }
@@ -166,18 +166,20 @@ body {
 .line1 {
     font-size: 2.5rem;
     font-weight: 300;
+    color: var(--text-primary);
 }
 
 .line2 {
     font-size: 2.5rem;
     font-weight: 300;
+    color: var(--text-primary);
 }
 
 .username-line {
     font-size: 4rem;
     font-weight: 700;
     color: var(--accent-color);
-    text-shadow: 0 0 10px rgba(0, 77, 97, 0.5);
+    text-shadow: 0 0 15px rgba(0, 200, 255, 0.6);
     margin-top: 1rem;
 }
 
