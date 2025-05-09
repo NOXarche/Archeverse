@@ -1,0 +1,294 @@
+/* Base styles and variables */
+:root {
+    --primary-bg: #0a0a0a;
+    --secondary-bg: #121212;
+    --text-primary: #f8f8f8;
+    --text-secondary: #a0a0a0;
+    --accent-color: #e6c405;
+    --portal-glow: #4a3b00;
+    --door-color: #1a1a1a;
+    --loading-bar-bg: #2a2a2a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--primary-bg);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Loading Screen Styles */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-container {
+    width: 80%;
+    max-width: 500px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 4px;
+    background-color: var(--loading-bar-bg);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.loading-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.counter {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+/* Portal Hero Section */
+.portal-hero {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--primary-bg);
+    opacity: 0;
+}
+
+/* Portal Door Animation */
+.portal-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.portal-door {
+    position: relative;
+    width: 0;
+    height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.door-left, .door-right {
+    position: absolute;
+    height: 100vh;
+    width: 50vw;
+    background-color: var(--door-color);
+    top: 0;
+}
+
+.door-left {
+    right: 50%;
+    transform-origin: right center;
+}
+
+.door-right {
+    left: 50%;
+    transform-origin: left center;
+}
+
+.portal-glow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(
+        circle,
+        var(--accent-color) 0%,
+        var(--portal-glow) 40%,
+        transparent 70%
+    );
+    opacity: 0;
+    z-index: -1;
+}
+
+/* Content Styles */
+.content-container {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: 2rem;
+    opacity: 0;
+}
+
+.welcome-text {
+    margin-bottom: 3rem;
+}
+
+.reveal-text {
+    position: relative;
+    overflow: hidden;
+    margin: 0.5rem 0;
+}
+
+.reveal-text span {
+    display: block;
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+.line1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+}
+
+.line2 {
+    font-size: 2.5rem;
+    font-weight: 300;
+}
+
+.username-line {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-top: 1rem;
+}
+
+/* CTA Button */
+.cta-container {
+    margin-top: 3rem;
+}
+
+.enter-btn {
+    background-color: transparent;
+    color: var(--text-primary);
+    border: 2px solid var(--accent-color);
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.enter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+    z-index: -1;
+}
+
+.enter-btn:hover {
+    color: var(--primary-bg);
+}
+
+.enter-btn:hover::before {
+    width: 100%;
+}
+
+.enter-btn i {
+    transition: transform 0.3s ease;
+}
+
+.enter-btn:hover i {
+    transform: translateX(5px);
+}
+
+/* Sound Control */
+.sound-control {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+#toggle-sound {
+    background-color: rgba(26, 26, 26, 0.7);
+    color: var(--accent-color);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#toggle-sound:hover {
+    background-color: rgba(26, 26, 26, 1);
+}
+
+/* Portal particles */
+.portal-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .line1, .line2 {
+        font-size: 1.8rem;
+    }
+    
+    .username-line {
+        font-size: 2.5rem;
+    }
+    
+    .enter-btn {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .line1, .line2 {
+        font-size: 1.5rem;
+    }
+    
+    .username-line {
+        font-size: 2rem;
+    }
+}
