@@ -24,7 +24,7 @@ function initializeAudio() {
         const audioContext = new AudioContext();
         
         // Load and decode audio files
-        fetch('sounds/portal-open.mp3')
+        fetch('/sounds/portal-open.mp3')
             .then(response => response.arrayBuffer())
             .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
             .then(audioBuffer => {
@@ -32,7 +32,7 @@ function initializeAudio() {
             })
             .catch(error => console.error('Error loading portal sound:', error));
             
-        fetch('sounds/ambient.mp3')
+        fetch('/sounds/ambient.mp3')
             .then(response => response.arrayBuffer())
             .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
             .then(audioBuffer => {
@@ -40,7 +40,7 @@ function initializeAudio() {
             })
             .catch(error => console.error('Error loading ambient sound:', error));
             
-        fetch('sounds/button-hover.mp3')
+        fetch('/sounds/button-hover.mp3')
             .then(response => response.arrayBuffer())
             .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
             .then(audioBuffer => {
@@ -226,7 +226,7 @@ function createParticles() {
         particle.style.position = 'absolute';
         particle.style.width = `${Math.random() * 5 + 2}px`;
         particle.style.height = particle.style.width;
-        particle.style.backgroundColor = 'rgba(0, 77, 97, 0.6)'; // Match accent color
+        particle.style.backgroundColor = 'rgba(0, 200, 255, 0.6)'; // Match accent color
         particle.style.borderRadius = '50%';
         particle.style.top = `${Math.random() * 100}%`;
         particle.style.left = `${Math.random() * 100}%`;
