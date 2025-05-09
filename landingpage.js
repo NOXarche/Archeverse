@@ -1,5 +1,6 @@
 // Initialize sound control
 let soundEnabled = true;
+let soundInitialized = false;
 
 // Audio elements
 const portalOpenSound = document.getElementById('portal-open-sound');
@@ -15,28 +16,90 @@ buttonHoverSound.volume = 0.3;
 const toggleSoundBtn = document.getElementById('toggle-sound');
 const toggleSoundIcon = toggleSoundBtn.querySelector('i');
 
+// Function to initialize audio (must be triggered by user interaction)
+function initializeAudio() {
+    if (!soundInitialized) {
+        // Create a context for all audio
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioContext = new AudioContext();
+        
+        // Load and decode audio files
+        fetch('sounds/portal-open.mp3')
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(audioBuffer => {
+                portalOpenSound._decodedAudio = audioBuffer;
+            })
+            .catch(error => console.error('Error loading portal sound:', error));
+            
+        fetch('sounds/ambient.mp3')
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(audioBuffer => {
+                ambientSound._decodedAudio = audioBuffer;
+            })
+            .catch(error => console.error('Error loading ambient sound:', error));
+            
+        fetch('sounds/button-hover.mp3')
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(audioBuffer => {
+                buttonHoverSound._decodedAudio = audioBuffer;
+            })
+            .catch(error => console.error('Error loading button sound:', error));
+            
+        soundInitialized = true;
+    }
+}
+
+// Play sound function that works with both HTML5 Audio and AudioContext
+function playSound(sound) {
+    if (!soundEnabled) return;
+    
+    if (sound._decodedAudio) {
+        // Use AudioContext (more reliable)
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioContext = new AudioContext();
+        const source = audioContext.createBufferSource();
+        source.buffer = sound._decodedAudio;
+        source.connect(audioContext.destination);
+        source.start(0);
+    } else {
+        // Fallback to HTML5 Audio
+        sound.currentTime = 0;
+        sound.play().catch(error => {
+            console.warn('Audio play failed:', error);
+        });
+    }
+}
+
 toggleSoundBtn.addEventListener('click', () => {
     soundEnabled = !soundEnabled;
     
     if (soundEnabled) {
         toggleSoundIcon.className = 'fas fa-volume-up';
-        ambientSound.play();
+        ambientSound.play().catch(e => console.warn('Could not play ambient sound:', e));
     } else {
         toggleSoundIcon.className = 'fas fa-volume-mute';
         ambientSound.pause();
         portalOpenSound.pause();
     }
+    
+    // Initialize audio on first user interaction
+    initializeAudio();
 });
 
 // Button hover sound effect
-const enterBtn = document.querySelector('.enter-btn');
+const enterBtn = document.getElementById('enter-btn');
 
 enterBtn.addEventListener('mouseenter', () => {
     if (soundEnabled) {
-        buttonHoverSound.currentTime = 0;
-        buttonHoverSound.play();
+        playSound(buttonHoverSound);
     }
 });
+
+// Initialize audio on first user interaction
+document.addEventListener('click', initializeAudio, { once: true });
 
 // Loading animation
 function startLoadingAnimation() {
@@ -52,7 +115,15 @@ function startLoadingAnimation() {
         } else {
             clearInterval(interval);
             setTimeout(() => {
-                startPortalAnimation();
+                // Wait for user interaction before starting animation
+                document.body.addEventListener('click', function startAnimation() {
+                    document.body.removeEventListener('click', startAnimation);
+                    startPortalAnimation();
+                });
+                
+                // Show a message to click to continue
+                const loadingMessage = document.querySelector('.loading-message');
+                loadingMessage.textContent = 'Click anywhere to enter';
             }, 500);
         }
     }, 30);
@@ -86,7 +157,7 @@ function startPortalAnimation() {
         ease: 'power2.inOut',
         onStart: () => {
             if (soundEnabled) {
-                portalOpenSound.play();
+                playSound(portalOpenSound);
             }
         }
     })
@@ -118,7 +189,7 @@ function startPortalAnimation() {
         duration: 1,
         onComplete: () => {
             if (soundEnabled) {
-                ambientSound.play();
+                ambientSound.play().catch(e => console.warn('Could not play ambient sound:', e));
             }
             createParticles();
         }
@@ -155,7 +226,7 @@ function createParticles() {
         particle.style.position = 'absolute';
         particle.style.width = `${Math.random() * 5 + 2}px`;
         particle.style.height = particle.style.width;
-        particle.style.backgroundColor = 'rgba(230, 196, 5, 0.6)';
+        particle.style.backgroundColor = 'rgba(0, 77, 97, 0.6)'; // Match accent color
         particle.style.borderRadius = '50%';
         particle.style.top = `${Math.random() * 100}%`;
         particle.style.left = `${Math.random() * 100}%`;
@@ -201,22 +272,28 @@ function initFirebase() {
         appId: "YOUR_APP_ID"
     };
     
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    
-    // Check authentication state
-    firebase.auth().onAuthStateChanged((user) => {
-        const usernameElement = document.getElementById('username');
+    try {
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
         
-        if (user) {
-            // User is signed in
-            const displayName = user.displayName || user.email || "Explorer";
-            usernameElement.textContent = displayName;
-        } else {
-            // User is not signed in
-            usernameElement.textContent = "mysterious explorer";
-        }
-    });
+        // Check authentication state
+        firebase.auth().onAuthStateChanged((user) => {
+            const usernameElement = document.getElementById('username');
+            
+            if (user) {
+                // User is signed in
+                const displayName = user.displayName || user.email || "Explorer";
+                usernameElement.textContent = displayName;
+            } else {
+                // User is not signed in
+                usernameElement.textContent = "mysterious explorer";
+            }
+        });
+    } catch (error) {
+        console.error("Firebase initialization error:", error);
+        // Fallback if Firebase fails
+        document.getElementById('username').textContent = "mysterious explorer";
+    }
 }
 
 // Enter button functionality
