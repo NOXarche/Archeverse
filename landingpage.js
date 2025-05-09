@@ -115,15 +115,15 @@ function startLoadingAnimation() {
         } else {
             clearInterval(interval);
             setTimeout(() => {
+                // Show a message to click to continue
+                const loadingMessage = document.querySelector('.loading-message');
+                loadingMessage.textContent = 'Click anywhere to enter';
+                
                 // Wait for user interaction before starting animation
                 document.body.addEventListener('click', function startAnimation() {
                     document.body.removeEventListener('click', startAnimation);
                     startPortalAnimation();
                 });
-                
-                // Show a message to click to continue
-                const loadingMessage = document.querySelector('.loading-message');
-                loadingMessage.textContent = 'Click anywhere to enter';
             }, 500);
         }
     }, 30);
@@ -192,6 +192,9 @@ function startPortalAnimation() {
                 ambientSound.play().catch(e => console.warn('Could not play ambient sound:', e));
             }
             createParticles();
+            
+            // Make sure the button is clickable
+            makeButtonClickable();
         }
     })
     
@@ -214,6 +217,46 @@ function startPortalAnimation() {
         duration: 0.8,
         ease: 'power3.out'
     }, '-=0.4');
+}
+
+// Make sure the button is clickable
+function makeButtonClickable() {
+    const enterBtnLink = document.querySelector('.enter-btn-link');
+    
+    // Add a pulsing animation to draw attention
+    gsap.to('.enter-btn', {
+        scale: 1.05,
+        duration: 0.8,
+        repeat: -1,
+        yoyo: true,
+        ease: 'power1.inOut'
+    });
+    
+    // Add an event listener to ensure navigation works
+    enterBtnLink.addEventListener('click', function(e) {
+        // Navigate to main page
+        window.location.href = 'mainpage.html';
+    });
+    
+    // Make sure the button is visible and interactive
+    enterBtnLink.style.pointerEvents = 'auto';
+    enterBtnLink.style.cursor = 'pointer';
+    
+    // Add a tooltip or hint
+    const hint = document.createElement('div');
+    hint.textContent = 'Click to continue';
+    hint.style.color = 'var(--text-secondary)';
+    hint.style.fontSize = '0.9rem';
+    hint.style.marginTop = '1rem';
+    hint.style.opacity = '0';
+    
+    document.querySelector('.cta-container').appendChild(hint);
+    
+    gsap.to(hint, {
+        opacity: 1,
+        duration: 1,
+        delay: 1
+    });
 }
 
 // Create floating particles effect
@@ -307,4 +350,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     startLoadingAnimation();
+    
+    // Ensure the button is clickable
+    const enterBtnLink = document.querySelector('.enter-btn-link');
+    enterBtnLink.addEventListener('click', function() {
+        window.location.href = 'mainpage.html';
+    });
 });
