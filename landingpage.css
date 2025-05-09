@@ -4,7 +4,7 @@
     --secondary-bg: #121212;
     --text-primary: #ffffff;
     --text-secondary: #cccccc;
-    --text-intro-line1: #e0e0ff; /* Light blue-white for first line */
+    --text-intro-line1: #64ffda; /* Bright teal for first line */
     --text-intro-line2: #f0d0ff; /* Light purple-white for second line */
     --accent-color: #00c8ff; /* Bright cyan */
     --accent-secondary: #ff3d71; /* Vibrant pink */
@@ -169,7 +169,7 @@ body {
     font-size: 2.5rem;
     font-weight: 300;
     color: var(--text-intro-line1);
-    text-shadow: 0 0 5px rgba(224, 224, 255, 0.3);
+    text-shadow: 0 0 5px rgba(100, 255, 218, 0.5);
 }
 
 .line2 {
@@ -190,6 +190,11 @@ body {
 /* CTA Button */
 .cta-container {
     margin-top: 3rem;
+}
+
+.button-link {
+    text-decoration: none;
+    display: inline-block;
 }
 
 .enter-btn {
