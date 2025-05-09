@@ -296,12 +296,6 @@ function initFirebase() {
     }
 }
 
-// Enter button functionality
-enterBtn.addEventListener('click', () => {
-    // Navigate to main portfolio page
-    window.location.href = 'portfolio.html';
-});
-
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     try {
