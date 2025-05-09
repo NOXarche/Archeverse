@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Portal</title>
+    <link rel="stylesheet" href="landingpage.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Initial loading screen -->
+    <div class="loading-screen">
+        <div class="loading-container">
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="loading-text">
+                <span class="loading-message">Opening portal</span>
+                <span class="counter">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main portal hero section -->
+    <div class="portal-hero">
+        <!-- Portal door animation container -->
+        <div class="portal-container">
+            <div class="portal-door">
+                <div class="door-left"></div>
+                <div class="door-right"></div>
+                <div class="portal-glow"></div>
+            </div>
+        </div>
+
+        <!-- Main content that appears after animation -->
+        <div class="content-container">
+            <div class="welcome-text">
+                <h1 class="reveal-text line1"><span>Are you ready to explore</span></h1>
+                <h1 class="reveal-text line2"><span>the journey of</span></h1>
+                <h1 class="reveal-text username-line"><span id="username">...</span></h1>
+            </div>
+            
+            <div class="cta-container">
+                <button class="enter-btn">
+                    <span>Enter Portfolio</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <div class="portal-particles"></div>
+        </div>
+    </div>
+
+    <!-- Audio elements -->
+    <audio id="portal-open-sound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="ambient-sound" loop preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/209/209-preview.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="button-hover-sound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Sound control button -->
+    <div class="sound-control">
+        <button id="toggle-sound">
+            <i class="fas fa-volume-up"></i>
+        </button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
+    <script src="landingpage.js"></script>
+</body>
+</html>
