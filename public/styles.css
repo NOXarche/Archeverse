@@ -16,6 +16,18 @@
     
     /* Common */
     --transition: all 0.3s ease;
+    
+    /* Typography variables */
+    --font-heading: 'Inter', 'Segoe UI', sans-serif;
+    --font-body: 'Inter', 'Segoe UI', sans-serif;
+    --font-mono: 'SF Mono', 'Roboto Mono', monospace;
+    
+    /* Font weights */
+    --light: 300;
+    --regular: 400;
+    --medium: 500;
+    --semi-bold: 600;
+    --bold: 700;
 }
 
 * {
@@ -24,8 +36,20 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-body);
+    line-height: 1.6;
+    font-weight: var(--regular);
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
@@ -42,6 +66,66 @@ body {
 .bright-mode {
     background-color: var(--bright-bg);
     color: var(--bright-text);
+}
+
+/* Skill Globe */
+.skill-globe {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    perspective: 1000px;
+    z-index: -1;
+    opacity: 0.7;
+    filter: drop-shadow(0 0 20px rgba(0, 209, 255, 0.5));
+}
+
+.globe-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotateGlobe 30s infinite linear;
+}
+
+.skill-icon {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: white;
+    background: rgba(30, 30, 30, 0.7);
+    transform-style: preserve-3d;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 209, 255, 0.5);
+    cursor: pointer;
+}
+
+.skill-icon:hover {
+    transform: scale(1.5) translateZ(20px);
+    z-index: 10;
+    box-shadow: 0 0 20px var(--dark-accent1);
+}
+
+.bright-mode .skill-icon {
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--bright-text);
+    box-shadow: 0 0 10px rgba(0, 128, 128, 0.5);
+}
+
+.bright-mode .skill-icon:hover {
+    box-shadow: 0 0 20px var(--bright-accent1);
+}
+
+@keyframes rotateGlobe {
+    from { transform: rotateY(0deg) rotateX(10deg); }
+    to { transform: rotateY(360deg) rotateX(10deg); }
 }
 
 /* Fluid Blob Animation */
@@ -124,41 +208,16 @@ body {
     filter: url(#goo);
 }
 
-.loader::before,
-.loader::after {
-    content: '';
+.loading-dot {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     background: var(--dark-accent1);
-    opacity: 0.7;
-    animation: loader 2s ease-in-out infinite;
 }
 
-.bright-mode .loader::before,
-.bright-mode .loader::after {
+.bright-mode .loading-dot {
     background: var(--bright-accent1);
-}
-
-.loader::after {
-    animation-delay: -1s;
-    background: var(--dark-accent2);
-}
-
-.bright-mode .loader::after {
-    background: var(--bright-accent2);
-}
-
-@keyframes loader {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(0.5) translate(100px, 0);
-    }
 }
 
 .loader-text {
@@ -296,6 +355,16 @@ body {
     padding: 2rem;
     border-radius: 20px;
     will-change: transform;
+    background: rgba(30, 30, 30, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.18);
+}
+
+.bright-mode .hero {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .fluid-text {
@@ -304,7 +373,9 @@ body {
 }
 
 .fluid-text h1 {
-    font-size: 3.5rem;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: var(--bold);
+    letter-spacing: -0.05em;
     margin-bottom: 0.5rem;
     background: linear-gradient(-45deg, var(--dark-accent1), var(--dark-accent2), var(--dark-accent1), var(--dark-accent2));
     background-size: 300% 300%;
@@ -313,6 +384,8 @@ body {
     background-clip: text;
     color: transparent;
     position: relative;
+    font-family: var(--font-heading);
+    line-height: 1.2;
 }
 
 .fluid-text::after {
@@ -376,13 +449,17 @@ body {
 }
 
 .hero .tags span {
-    background: var(--dark-card);
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.25rem;
     border-radius: 50px;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: var(--medium);
+    letter-spacing: 0.05em;
+    transition: all 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    background: var(--dark-card);
     color: var(--dark-accent1);
     border: 1px solid var(--dark-accent1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     overflow: hidden;
 }
@@ -417,8 +494,8 @@ body {
 }
 
 .hero .tags span:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 209, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 209, 255, 0.2);
 }
 
 .bright-mode .hero .tags span {
@@ -429,65 +506,68 @@ body {
 }
 
 .bright-mode .hero .tags span:hover {
-    box-shadow: 0 5px 15px rgba(0, 128, 128, 0.3);
+    box-shadow: 0 5px 15px rgba(0, 128, 128, 0.2);
 }
 
 .hero .tagline {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    font-weight: var(--light);
+    letter-spacing: 0.05em;
     opacity: 0.8;
 }
 
 /* Fluid Button */
-.fluid-btn {
-    background: linear-gradient(45deg, var(--dark-accent1), var(--dark-accent2));
+.fluid-btn, #proceedBtn {
     border: none;
-    padding: 1rem 2rem;
-    font-size: 1.2rem;
-    font-weight: 700;
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    font-weight: var(--medium);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     border-radius: 50px;
-    color: white;
     cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 1rem;
     position: relative;
     overflow: hidden;
-    will-change: transform, box-shadow;
+    transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(45deg, var(--dark-accent1), var(--dark-accent2));
+    color: white;
+    margin-top: 1rem;
 }
 
-.bright-mode .fluid-btn {
+.bright-mode .fluid-btn, .bright-mode #proceedBtn {
     background: linear-gradient(45deg, var(--bright-accent1), var(--bright-accent2));
 }
 
-.fluid-btn::before {
+.fluid-btn::before, #proceedBtn::before {
     content: '';
     position: absolute;
-    top: -100%;
-    left: -100%;
-    width: 300%;
-    height: 300%;
-    background: radial-gradient(
-        circle,
-        rgba(255, 255, 255, 0.3) 0%,
-        transparent 70%
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0.1) 100%
     );
-    transform: rotate(0deg);
-    transition: 0.8s;
+    transform: translateX(-100%);
+    transition: transform 0.6s cubic-bezier(0.83, 0, 0.17, 1);
 }
 
-.fluid-btn:hover::before {
-    top: -150%;
-    left: -150%;
-    transform: rotate(180deg);
+.fluid-btn:hover::before, #proceedBtn:hover::before {
+    transform: translateX(100%);
 }
 
-.fluid-btn:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+.fluid-btn:hover, #proceedBtn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.fluid-btn:active {
-    transform: scale(0.95) rotate(-5deg);
-    border-radius: 30px;
+.fluid-btn:active, #proceedBtn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Portal Container */
@@ -501,6 +581,16 @@ body {
     padding: 2rem;
     border-radius: 20px;
     will-change: transform;
+    background: rgba(30, 30, 30, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.18);
+}
+
+.bright-mode #portalContainer {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .portal-effect {
@@ -563,54 +653,8 @@ body {
 
 #proceedBtn {
     margin-top: 1rem;
-    padding: 1rem 3rem;
-    font-size: 1.2rem;
-    font-weight: 700;
-    background: var(--dark-accent2);
-    color: white;
-    border-radius: 50px;
-    text-decoration: none;
     opacity: 0;
     transform: scale(0);
-    transition: all 0.3s ease;
-    display: inline-block;
-    letter-spacing: 2px;
-    box-shadow: 0 0 20px var(--dark-accent2);
-    will-change: transform, box-shadow;
-    position: relative;
-    overflow: hidden;
-}
-
-#proceedBtn::before {
-    content: '';
-    position: absolute;
-    top: -100%;
-    left: -100%;
-    width: 300%;
-    height: 300%;
-    background: radial-gradient(
-        circle,
-        rgba(255, 255, 255, 0.3) 0%,
-        transparent 70%
-    );
-    transform: rotate(0deg);
-    transition: 0.8s;
-}
-
-#proceedBtn:hover::before {
-    top: -150%;
-    left: -150%;
-    transform: rotate(180deg);
-}
-
-.bright-mode #proceedBtn {
-    background: var(--bright-accent2);
-    color: var(--bright-text);
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-}
-
-#proceedBtn:hover {
-    transform: scale(1.05) translateY(-5px);
 }
 
 /* Counters */
@@ -623,6 +667,16 @@ body {
     padding: 2rem;
     border-radius: 20px;
     will-change: transform;
+    background: rgba(30, 30, 30, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.18);
+}
+
+.bright-mode .counters {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .counter {
@@ -676,24 +730,26 @@ body {
 }
 
 .fluid-card {
-    background: var(--dark-card);
+    background: rgba(30, 30, 30, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.18);
     color: var(--dark-text);
     border-radius: 15px;
     padding: 1.5rem;
     width: 280px;
-    box-shadow: 0 4px 15px rgba(0, 209, 255, 0.3);
     transition: transform 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67), box-shadow 0.5s ease;
     cursor: pointer;
-    backdrop-filter: blur(5px);
     will-change: transform, opacity;
     position: relative;
     overflow: hidden;
 }
 
 .bright-mode .fluid-card {
-    background: var(--bright-card);
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.05);
     color: var(--bright-text);
-    box-shadow: 0 4px 15px rgba(0, 128, 128, 0.3);
 }
 
 .fluid-card:hover {
@@ -728,7 +784,8 @@ body {
 }
 
 .card-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: var(--medium);
     margin-bottom: 0.5rem;
     color: var(--dark-accent1);
     position: relative;
@@ -741,9 +798,30 @@ body {
 
 .card-content {
     font-size: 1rem;
+    font-weight: var(--regular);
+    line-height: 1.6;
     opacity: 0.8;
     position: relative;
     z-index: 1;
+}
+
+/* Micro-interactions for better UX */
+button, a, .fluid-card, .tags span {
+    transition: 
+        transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1),
+        box-shadow 0.3s cubic-bezier(0.215, 0.61, 0.355, 1),
+        background 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Focus states for accessibility */
+button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--dark-accent1);
+    outline-offset: 3px;
+}
+
+.bright-mode button:focus-visible,
+.bright-mode a:focus-visible {
+    outline: 2px solid var(--bright-accent1);
 }
 
 /* Reduced Motion */
@@ -792,5 +870,17 @@ body {
     
     #blob {
         height: 200px;
+    }
+    
+    .skill-globe {
+        width: 200px;
+        height: 200px;
+        opacity: 0.5;
+    }
+    
+    .skill-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
     }
 }
