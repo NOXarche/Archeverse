@@ -1,27 +1,3 @@
-// Add this at the beginning of script.js
-document.addEventListener('DOMContentLoaded', () => {
-    // Check if Three.js is loaded
-    if (typeof THREE === 'undefined') {
-        console.error('Three.js is not loaded. Loading from CDN...');
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/three@0.148.0/build/three.min.js';
-        script.onload = () => {
-            console.log('Three.js loaded successfully');
-            initGalaxy();
-            initCounters();
-            initCardEffects();
-        };
-        document.head.appendChild(script);
-    } else {
-        console.log('Three.js is already loaded');
-        initGalaxy();
-        initCounters();
-        initCardEffects();
-    }
-});
-
-
-
 // Theme Toggle
 const themeToggle = document.querySelector('.theme-toggle');
 const sunIcon = document.querySelector('.fa-sun');
@@ -48,194 +24,41 @@ themeToggle.addEventListener('click', () => {
         moonIcon.classList.add('active');
         sunIcon.classList.remove('active');
     }
-    
-    // Update skill galaxy colors
-    updateGalaxyColors();
 });
 
-// Skill Galaxy Script
-const skills = [
-    {name: 'HTML', tooltip: 'HTML5 Projects', preview: 'Responsive websites built with semantic HTML5'},
-    {name: 'CSS', tooltip: 'CSS3 & SCSS Projects', preview: 'Modern designs with animations and transitions'},
-    {name: 'UI/UX', tooltip: 'User Interface Designs', preview: 'User-centered design approach with Figma prototypes'},
-    {name: 'AutoCAD', tooltip: 'AutoCAD Designs', preview: 'Detailed 2D and 3D architectural models'},
-    {name: 'STAAD', tooltip: 'STAAD Structural Analysis', preview: 'Bridge and building structural analysis projects'},
-    {name: 'Finance', tooltip: 'Financial Models', preview: 'Investment analysis and financial forecasting'},
-    {name: 'App Dev', tooltip: 'Mobile App Development', preview: 'Cross-platform mobile applications'},
-    {name: 'Web Dev', tooltip: 'Web Development', preview: 'Full-stack web applications with modern frameworks'}
-];
-
-let scene, camera, renderer;
-let orbs = [];
-let orbGroup;
-let raycaster = new THREE.Raycaster();
-let mouse = new THREE.Vector2();
-let tooltip = document.getElementById('tooltip');
-let preview = document.getElementById('preview');
-
-function initGalaxy() {
-    // Scene setup
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    camera.position.z = 20;
-
-    renderer = new THREE.WebGLRenderer({
-        canvas: document.getElementById('skillGalaxyCanvas'), 
-        alpha: true,
-        antialias: true
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-
-    // Create orb group for global rotation
-    orbGroup = new THREE.Group();
-    scene.add(orbGroup);
-
-    // Create orbs
-    const geometry = new THREE.SphereGeometry(1.2, 32, 32);
+// Add mouse parallax effect to galaxy
+document.addEventListener('mousemove', (e) => {
+    const mouseX = e.clientX / window.innerWidth - 0.5;
+    const mouseY = e.clientY / window.innerHeight - 0.5;
     
-    skills.forEach((skill, index) => {
-        // Create material based on current theme
-        const color = body.classList.contains('dark-mode') ? 0x00D1FF : 0x008080;
-        const material = new THREE.MeshBasicMaterial({
-            color: color,
-            transparent: true,
-            opacity: 0.8
+    const galaxy = document.querySelector('.galaxy');
+    galaxy.style.transform = `translate(-50%, -50%) rotateX(${mouseY * 10}deg) rotateY(${mouseX * 10}deg)`;
+    
+    // Parallax effect for content sections
+    const hero = document.querySelector('.hero');
+    const counters = document.querySelector('.counters');
+    const cards = document.querySelectorAll('.card');
+    
+    gsap.to(hero, {
+        x: mouseX * 20,
+        y: mouseY * 20,
+        duration: 1
+    });
+    
+    gsap.to(counters, {
+        x: mouseX * -15,
+        y: mouseY * -15,
+        duration: 1
+    });
+    
+    cards.forEach((card, index) => {
+        gsap.to(card, {
+            x: mouseX * (10 + index * 5),
+            y: mouseY * (10 + index * 5),
+            duration: 1
         });
-        
-        const orb = new THREE.Mesh(geometry, material);
-        
-        // Position orbs in a spherical distribution
-        const phi = Math.acos(-1 + (2 * index) / skills.length);
-        const theta = Math.sqrt(skills.length * Math.PI) * phi;
-        const radius = 10;
-        
-        orb.position.set(
-            radius * Math.cos(theta) * Math.sin(phi),
-            radius * Math.sin(theta) * Math.sin(phi),
-            radius * Math.cos(phi)
-        );
-        
-        // Store skill data with the orb
-        orb.userData = skill;
-        
-        // Add to orb group
-        orbGroup.add(orb);
-        orbs.push(orb);
     });
-
-    // Event listeners
-    window.addEventListener('resize', onWindowResize);
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('click', onClick);
-
-    // Start animation loop
-    animate();
-}
-
-function updateGalaxyColors() {
-    const newColor = body.classList.contains('dark-mode') ? 0x00D1FF : 0x008080;
-    orbs.forEach(orb => {
-        orb.material.color.set(newColor);
-    });
-}
-
-function onWindowResize() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-}
-
-function onMouseMove(event) {
-    // Update mouse position for raycasting
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    // Check for intersections
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(orbs);
-
-    // Reset all orbs
-    orbs.forEach(orb => {
-        gsap.to(orb.scale, {
-            x: 1,
-            y: 1,
-            z: 1,
-            duration: 0.3
-        });
-        orb.material.opacity = 0.8;
-    });
-    
-    // Handle hover effects
-    if (intersects.length > 0) {
-        const orb = intersects[0].object;
-        
-        // Show tooltip
-        tooltip.style.display = 'block';
-        tooltip.style.left = event.clientX + 10 + 'px';
-        tooltip.style.top = event.clientY + 10 + 'px';
-        tooltip.textContent = orb.userData.tooltip;
-        
-        // Highlight orb
-        gsap.to(orb.scale, {
-            x: 1.3,
-            y: 1.3,
-            z: 1.3,
-            duration: 0.3
-        });
-        orb.material.opacity = 1.0;
-        
-        // Change cursor
-        document.body.style.cursor = 'pointer';
-    } else {
-        // Hide tooltip and reset cursor
-        tooltip.style.display = 'none';
-        document.body.style.cursor = 'default';
-    }
-}
-
-function onClick(event) {
-    // Check for intersections
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(orbs);
-
-    // Hide any existing preview
-    preview.style.display = 'none';
-    
-    // Show preview if orb is clicked
-    if (intersects.length > 0) {
-        const orb = intersects[0].object;
-        preview.style.display = 'block';
-        preview.style.left = event.clientX + 20 + 'px';
-        preview.style.top = event.clientY + 20 + 'px';
-        preview.textContent = orb.userData.preview;
-        
-        // Animate the clicked orb
-        gsap.to(orb.scale, {
-            x: 1.8,
-            y: 1.8,
-            z: 1.8,
-            duration: 0.3,
-            yoyo: true,
-            repeat: 1
-        });
-    }
-}
-
-function animate() {
-    requestAnimationFrame(animate);
-    
-    // Individual orb rotation
-    orbs.forEach(orb => {
-        orb.rotation.x += 0.01;
-        orb.rotation.y += 0.01;
-    });
-    
-    // Global rotation of the entire orb group
-    orbGroup.rotation.y += 0.002;
-    
-    renderer.render(scene, camera);
-}
+});
 
 // Portal pop-out animation
 const portfolioBtn = document.getElementById('portfolioBtn');
@@ -377,7 +200,14 @@ function initCardEffects() {
 
 // Initialize everything when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    initGalaxy();
     initCounters();
     initCardEffects();
+    
+    // Add some random movement to tech icons
+    const techIcons = document.querySelectorAll('.tech-icon');
+    techIcons.forEach(icon => {
+        // Random starting position
+        const randomDelay = Math.random() * 5;
+        icon.style.animationDelay = `${randomDelay}s`;
+    });
 });
