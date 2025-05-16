@@ -30,6 +30,7 @@ body {
     overflow-x: hidden;
     position: relative;
     transition: var(--transition);
+    perspective: 1000px;
 }
 
 .dark-mode {
@@ -71,51 +72,122 @@ body {
     color: var(--bright-accent2);
 }
 
-/* Skill Galaxy Canvas */
-#skillGalaxyCanvas {
+/* Galaxy Animation */
+.galaxy-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: -1;
-    display: block;
-}
-
-/* Tooltip and Preview */
-.tooltip {
-    position: absolute;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
+    overflow: hidden;
     pointer-events: none;
-    font-size: 14px;
-    display: none;
-    z-index: 10;
 }
 
-.preview {
+.galaxy {
     position: absolute;
-    background: #222;
-    border: 1px solid #555;
-    padding: 10px;
-    border-radius: 8px;
-    display: none;
-    max-width: 200px;
-    max-height: 150px;
-    overflow: auto;
-    color: white;
-    font-size: 14px;
-    z-index: 10;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    transform-style: preserve-3d;
 }
 
-.bright-mode .preview {
-    background: #fff;
-    border: 1px solid #ddd;
-    color: #121212;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+.orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-style: preserve-3d;
+    animation: rotate 30s linear infinite;
+}
+
+.orbit-1 {
+    width: 60vmin;
+    height: 60vmin;
+    animation-duration: 30s;
+}
+
+.orbit-2 {
+    width: 90vmin;
+    height: 90vmin;
+    animation-duration: 40s;
+    animation-direction: reverse;
+}
+
+.orbit-3 {
+    width: 120vmin;
+    height: 120vmin;
+    animation-duration: 50s;
+}
+
+.tech-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-style: preserve-3d;
+    transform: translate(-50%, -50%) rotate(calc(var(--i) * 90deg)) translateX(calc(var(--orbit-radius) / 2)) rotateY(calc(var(--i) * 90deg));
+    animation: float 5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.5s);
+}
+
+.orbit-1 .tech-icon {
+    --orbit-radius: 60vmin;
+}
+
+.orbit-2 .tech-icon {
+    --orbit-radius: 90vmin;
+}
+
+.orbit-3 .tech-icon {
+    --orbit-radius: 120vmin;
+}
+
+.tech-icon i {
+    font-size: 2rem;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.dark-mode .tech-icon {
+    background: rgba(30, 30, 30, 0.7);
+    box-shadow: 0 0 15px rgba(0, 209, 255, 0.5);
+}
+
+.dark-mode .tech-icon i {
+    color: var(--dark-accent1);
+}
+
+.bright-mode .tech-icon {
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 15px rgba(0, 128, 128, 0.5);
+}
+
+.bright-mode .tech-icon i {
+    color: var(--bright-accent1);
+}
+
+@keyframes rotate {
+    0% {
+        transform: translate(-50%, -50%) rotateX(75deg) rotateY(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotateX(75deg) rotateY(360deg);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(-50%, -50%) rotate(calc(var(--i) * 90deg)) translateX(calc(var(--orbit-radius) / 2)) rotateY(calc(var(--i) * 90deg)) translateZ(0);
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(calc(var(--i) * 90deg)) translateX(calc(var(--orbit-radius) / 2)) rotateY(calc(var(--i) * 90deg)) translateZ(20px);
+    }
 }
 
 /* Main container */
@@ -135,6 +207,9 @@ body {
 /* Hero Section */
 .hero {
     margin-bottom: 2rem;
+    backdrop-filter: blur(5px);
+    padding: 2rem;
+    border-radius: 20px;
 }
 
 .hero h1 {
@@ -235,6 +310,9 @@ body {
     align-items: center;
     margin-top: 2rem;
     position: relative;
+    backdrop-filter: blur(5px);
+    padding: 2rem;
+    border-radius: 20px;
 }
 
 .portal-effect {
@@ -326,6 +404,9 @@ body {
     justify-content: center;
     gap: 3rem;
     margin: 2rem 0;
+    backdrop-filter: blur(5px);
+    padding: 2rem;
+    border-radius: 20px;
 }
 
 .counter {
@@ -365,6 +446,7 @@ body {
     box-shadow: 0 4px 15px rgba(0, 209, 255, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    backdrop-filter: blur(5px);
 }
 
 .bright-mode .card {
@@ -425,5 +507,29 @@ body {
     
     .card {
         width: 100%;
+    }
+    
+    .tech-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .tech-icon i {
+        font-size: 1.5rem;
+    }
+    
+    .orbit-1 {
+        width: 40vmin;
+        height: 40vmin;
+    }
+    
+    .orbit-2 {
+        width: 60vmin;
+        height: 60vmin;
+    }
+    
+    .orbit-3 {
+        width: 80vmin;
+        height: 80vmin;
     }
 }
