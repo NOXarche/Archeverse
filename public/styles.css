@@ -31,6 +31,7 @@ body {
     position: relative;
     transition: var(--transition);
     perspective: 1000px;
+    cursor: none;
 }
 
 .dark-mode {
@@ -41,6 +42,64 @@ body {
 .bright-mode {
     background-color: var(--bright-bg);
     color: var(--bright-text);
+}
+
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--dark-bg);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.bright-mode .loading-screen {
+    background-color: var(--bright-bg);
+}
+
+.loader {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--dark-accent1);
+    animation: spin 1s linear infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bright-mode .loader {
+    border-top-color: var(--bright-accent1);
+}
+
+.loader-text {
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient(-45deg, var(--dark-accent1), var(--dark-accent2), var(--dark-accent1), var(--dark-accent2));
+    background-size: 300% 300%;
+    animation: gradientShift 3s ease infinite;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.bright-mode .loader-text {
+    background: linear-gradient(-45deg, var(--bright-accent1), var(--bright-accent2), var(--bright-accent1), var(--bright-accent2));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Theme Toggle */
@@ -72,122 +131,49 @@ body {
     color: var(--bright-accent2);
 }
 
-/* Galaxy Animation */
-.galaxy-container {
+/* Particle Canvas */
+#particleCanvas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     z-index: -1;
-    overflow: hidden;
-    pointer-events: none;
+    display: block;
 }
 
-.galaxy {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100vw;
-    height: 100vh;
-    transform-style: preserve-3d;
-}
-
-.orbit {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform-style: preserve-3d;
-    animation: rotate 30s linear infinite;
-}
-
-.orbit-1 {
-    width: 60vmin;
-    height: 60vmin;
-    animation-duration: 30s;
-}
-
-.orbit-2 {
-    width: 90vmin;
-    height: 90vmin;
-    animation-duration: 40s;
-    animation-direction: reverse;
-}
-
-.orbit-3 {
-    width: 120vmin;
-    height: 120vmin;
-    animation-duration: 50s;
-}
-
-.tech-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 50px;
-    height: 50px;
+/* Custom Cursor */
+.cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform-style: preserve-3d;
-    transform: translate(-50%, -50%) rotate(calc(var(--i) * 90deg)) translateX(calc(var(--orbit-radius) / 2)) rotateY(calc(var(--i) * 90deg));
-    animation: float 5s ease-in-out infinite;
-    animation-delay: calc(var(--i) * 0.5s);
+    background: rgba(0, 209, 255, 0.7);
+    pointer-events: none;
+    mix-blend-mode: difference;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease;
 }
 
-.orbit-1 .tech-icon {
-    --orbit-radius: 60vmin;
+.cursor-follower {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(0, 209, 255, 0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease;
 }
 
-.orbit-2 .tech-icon {
-    --orbit-radius: 90vmin;
+.bright-mode .cursor {
+    background: rgba(0, 128, 128, 0.7);
 }
 
-.orbit-3 .tech-icon {
-    --orbit-radius: 120vmin;
-}
-
-.tech-icon i {
-    font-size: 2rem;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.dark-mode .tech-icon {
-    background: rgba(30, 30, 30, 0.7);
-    box-shadow: 0 0 15px rgba(0, 209, 255, 0.5);
-}
-
-.dark-mode .tech-icon i {
-    color: var(--dark-accent1);
-}
-
-.bright-mode .tech-icon {
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: 0 0 15px rgba(0, 128, 128, 0.5);
-}
-
-.bright-mode .tech-icon i {
-    color: var(--bright-accent1);
-}
-
-@keyframes rotate {
-    0% {
-        transform: translate(-50%, -50%) rotateX(75deg) rotateY(0deg);
-    }
-    100% {
-        transform: translate(-50%, -50%) rotateX(75deg) rotateY(360deg);
-    }
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translate(-50%, -50%) rotate(calc(var(--i) * 90deg)) translateX(calc(var(--orbit-radius) / 2)) rotateY(calc(var(--i) * 90deg)) translateZ(0);
-    }
-    50% {
-        transform: translate(-50%, -50%) rotate(calc(var(--i) * 90deg)) translateX(calc(var(--orbit-radius) / 2)) rotateY(calc(var(--i) * 90deg)) translateZ(20px);
-    }
+.bright-mode .cursor-follower {
+    border: 1px solid rgba(0, 128, 128, 0.5);
 }
 
 /* Main container */
@@ -210,22 +196,33 @@ body {
     backdrop-filter: blur(5px);
     padding: 2rem;
     border-radius: 20px;
+    will-change: transform;
 }
 
 .hero h1 {
     font-size: 3.5rem;
     margin-bottom: 0.5rem;
-    background: linear-gradient(to right, var(--dark-accent1), var(--dark-accent2));
+    background: linear-gradient(-45deg, var(--dark-accent1), var(--dark-accent2), var(--dark-accent1), var(--dark-accent2));
+    background-size: 300% 300%;
+    animation: gradientShift 8s ease infinite;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
 }
 
 .bright-mode .hero h1 {
-    background: linear-gradient(to right, var(--bright-accent1), var(--bright-accent2));
+    background: linear-gradient(-45deg, var(--bright-accent1), var(--bright-accent2), var(--bright-accent1), var(--bright-accent2));
+    background-size: 300% 300%;
+    animation: gradientShift 8s ease infinite;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .hero .tags {
@@ -242,6 +239,12 @@ body {
     font-weight: 600;
     color: var(--dark-accent1);
     border: 1px solid var(--dark-accent1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero .tags span:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 209, 255, 0.3);
 }
 
 .bright-mode .hero .tags span {
@@ -249,6 +252,10 @@ body {
     color: var(--bright-accent1);
     border: 1px solid var(--bright-accent1);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.bright-mode .hero .tags span:hover {
+    box-shadow: 0 5px 15px rgba(0, 128, 128, 0.3);
 }
 
 .hero .tagline {
@@ -270,6 +277,7 @@ body {
     margin-top: 1rem;
     position: relative;
     overflow: hidden;
+    will-change: transform, box-shadow;
 }
 
 .bright-mode #portfolioBtn {
@@ -313,6 +321,7 @@ body {
     backdrop-filter: blur(5px);
     padding: 2rem;
     border-radius: 20px;
+    will-change: transform;
 }
 
 .portal-effect {
@@ -322,6 +331,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    will-change: transform, opacity;
 }
 
 .portal-ring {
@@ -386,6 +396,7 @@ body {
     display: inline-block;
     letter-spacing: 2px;
     box-shadow: 0 0 20px var(--dark-accent2);
+    will-change: transform, box-shadow;
 }
 
 .bright-mode #proceedBtn {
@@ -407,11 +418,13 @@ body {
     backdrop-filter: blur(5px);
     padding: 2rem;
     border-radius: 20px;
+    will-change: transform;
 }
 
 .counter {
     text-align: center;
     color: var(--dark-accent1);
+    will-change: transform, opacity;
 }
 
 .bright-mode .counter {
@@ -447,6 +460,7 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
     backdrop-filter: blur(5px);
+    will-change: transform, opacity;
 }
 
 .bright-mode .card {
@@ -479,6 +493,12 @@ body {
     opacity: 0.8;
 }
 
+/* Reduced Motion */
+.reduced-motion * {
+    animation-duration: 0.1s !important;
+    transition-duration: 0.1s !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .hero h1 {
@@ -509,27 +529,11 @@ body {
         width: 100%;
     }
     
-    .tech-icon {
-        width: 40px;
-        height: 40px;
+    .cursor, .cursor-follower {
+        display: none;
     }
     
-    .tech-icon i {
-        font-size: 1.5rem;
-    }
-    
-    .orbit-1 {
-        width: 40vmin;
-        height: 40vmin;
-    }
-    
-    .orbit-2 {
-        width: 60vmin;
-        height: 60vmin;
-    }
-    
-    .orbit-3 {
-        width: 80vmin;
-        height: 80vmin;
+    body {
+        cursor: auto;
     }
 }
