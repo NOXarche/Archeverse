@@ -1,0 +1,18 @@
+{
+  "name": "archishman-portfolio",
+  "version": "1.0.0",
+  "description": "Portfolio landing page for Archishman Das",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve",
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "three": "^0.148.0",
+    "gsap": "^3.11.4",
+    "typed.js": "^2.0.16"
+  },
+  "devDependencies": {
+    "serve": "^14.0.1"
+  }
+}
