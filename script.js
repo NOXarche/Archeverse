@@ -1,359 +1,276 @@
-// Initialize sound control
-let soundEnabled = true;
-let soundInitialized = false;
+// Theme Toggle
+const themeToggle = document.querySelector('.theme-toggle');
+const sunIcon = document.querySelector('.fa-sun');
+const moonIcon = document.querySelector('.fa-moon');
+const body = document.body;
 
-// Audio elements
-const portalOpenSound = document.getElementById('portal-open-sound');
-const ambientSound = document.getElementById('ambient-sound');
-const buttonHoverSound = document.getElementById('button-hover-sound');
-
-// Set volume levels
-portalOpenSound.volume = 0.7;
-ambientSound.volume = 0.2;
-buttonHoverSound.volume = 0.3;
-
-// Sound toggle functionality
-const toggleSoundBtn = document.getElementById('toggle-sound');
-const toggleSoundIcon = toggleSoundBtn.querySelector('i');
-
-// Function to initialize audio (must be triggered by user interaction)
-function initializeAudio() {
-    if (!soundInitialized) {
-        // Create a context for all audio
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioContext = new AudioContext();
-        
-        // Load and decode audio files
-        fetch('/sounds/portal-open.mp3')
-            .then(response => response.arrayBuffer())
-            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-            .then(audioBuffer => {
-                portalOpenSound._decodedAudio = audioBuffer;
-            })
-            .catch(error => console.error('Error loading portal sound:', error));
-            
-        fetch('/sounds/ambient.mp3')
-            .then(response => response.arrayBuffer())
-            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-            .then(audioBuffer => {
-                ambientSound._decodedAudio = audioBuffer;
-            })
-            .catch(error => console.error('Error loading ambient sound:', error));
-            
-        fetch('/sounds/button-hover.mp3')
-            .then(response => response.arrayBuffer())
-            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
-            .then(audioBuffer => {
-                buttonHoverSound._decodedAudio = audioBuffer;
-            })
-            .catch(error => console.error('Error loading button sound:', error));
-            
-        soundInitialized = true;
-    }
+// Check for system preference
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    body.classList.remove('dark-mode');
+    body.classList.add('bright-mode');
+    sunIcon.classList.add('active');
+    moonIcon.classList.remove('active');
 }
 
-// Play sound function that works with both HTML5 Audio and AudioContext
-function playSound(sound) {
-    if (!soundEnabled) return;
-    
-    if (sound._decodedAudio) {
-        // Use AudioContext (more reliable)
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioContext = new AudioContext();
-        const source = audioContext.createBufferSource();
-        source.buffer = sound._decodedAudio;
-        source.connect(audioContext.destination);
-        source.start(0);
+themeToggle.addEventListener('click', () => {
+    if (body.classList.contains('dark-mode')) {
+        body.classList.remove('dark-mode');
+        body.classList.add('bright-mode');
+        sunIcon.classList.add('active');
+        moonIcon.classList.remove('active');
     } else {
-        // Fallback to HTML5 Audio
-        sound.currentTime = 0;
-        sound.play().catch(error => {
-            console.warn('Audio play failed:', error);
+        body.classList.remove('bright-mode');
+        body.classList.add('dark-mode');
+        moonIcon.classList.add('active');
+        sunIcon.classList.remove('active');
+    }
+});
+
+// Skill Orbs Animation
+const skillOrbs = document.querySelectorAll('.skill-orb');
+
+skillOrbs.forEach((orb, index) => {
+    // Add 3D rotation animation
+    orb.style.animation = `float ${6 + index % 3}s infinite ease-in-out ${index * 0.2}s, rotate ${10 + index % 5}s linear infinite`;
+    
+    // Random starting positions
+    orb.style.transform = `translateY(${Math.random() * 20 - 10}px)`;
+});
+
+// Cursor Trail Effect
+const cursorTrail = document.querySelector('.cursor-trail');
+const trailElements = [];
+const trailCount = 15;
+
+// Create trail elements
+for (let i = 0; i < trailCount; i++) {
+    const trail = document.createElement('div');
+    trail.className = 'trail-dot';
+    trail.style.width = `${8 - (i * 0.5)}px`;
+    trail.style.height = `${8 - (i * 0.5)}px`;
+    trail.style.backgroundColor = body.classList.contains('dark-mode') ? 
+        `rgba(${0}, ${209 - i * 10}, ${255 - i * 10}, ${1 - i * 0.06})` : 
+        `rgba(${0}, ${128 - i * 5}, ${128 - i * 5}, ${1 - i * 0.06})`;
+    trail.style.borderRadius = '50%';
+    trail.style.position = 'fixed';
+    trail.style.pointerEvents = 'none';
+    trail.style.zIndex = '9999';
+    trail.style.transform = 'translate(-50%, -50%)';
+    trail.style.transition = 'opacity 0.2s ease';
+    document.body.appendChild(trail);
+    trailElements.push({
+        element: trail,
+        x: 0,
+        y: 0
+    });
+}
+
+// Update cursor trail positions
+document.addEventListener('mousemove', (e) => {
+    gsap.to(cursorTrail, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.1
+    });
+    
+    // Update trail positions with delay
+    setTimeout(() => {
+        trailElements.forEach((trail, index) => {
+            trail.x = e.clientX;
+            trail.y = e.clientY;
+            
+            gsap.to(trail.element, {
+                x: trail.x,
+                y: trail.y,
+                duration: 0.3,
+                delay: index * 0.02
+            });
         });
-    }
-}
-
-toggleSoundBtn.addEventListener('click', () => {
-    soundEnabled = !soundEnabled;
-    
-    if (soundEnabled) {
-        toggleSoundIcon.className = 'fas fa-volume-up';
-        ambientSound.play().catch(e => console.warn('Could not play ambient sound:', e));
-    } else {
-        toggleSoundIcon.className = 'fas fa-volume-mute';
-        ambientSound.pause();
-        portalOpenSound.pause();
-    }
-    
-    // Initialize audio on first user interaction
-    initializeAudio();
+    }, 10);
 });
 
-// Button hover sound effect
-const enterBtn = document.getElementById('enter-btn');
+// Background Animation
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const particleCount = 100;
 
-enterBtn.addEventListener('mouseenter', () => {
-    if (soundEnabled) {
-        playSound(buttonHoverSound);
+// Set canvas size
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Particle class
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
+        this.color = body.classList.contains('dark-mode') ? 
+            `rgba(0, 209, 255, ${Math.random() * 0.3})` : 
+            `rgba(0, 128, 128, ${Math.random() * 0.3})`;
     }
-});
-
-// Initialize audio on first user interaction
-document.addEventListener('click', initializeAudio, { once: true });
-
-// Loading animation
-function startLoadingAnimation() {
-    const progressBar = document.querySelector('.progress-bar');
-    const counterElement = document.querySelector('.counter');
-    let counter = 0;
     
-    const interval = setInterval(() => {
-        if (counter < 100) {
-            counter += 1;
-            progressBar.style.width = `${counter}%`;
-            counterElement.textContent = `${counter}%`;
-        } else {
-            clearInterval(interval);
-            setTimeout(() => {
-                // Show a message to click to continue
-                const loadingMessage = document.querySelector('.loading-message');
-                loadingMessage.textContent = 'Click anywhere to enter';
-                
-                // Wait for user interaction before starting animation
-                document.body.addEventListener('click', function startAnimation() {
-                    document.body.removeEventListener('click', startAnimation);
-                    startPortalAnimation();
-                });
-            }, 500);
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        
+        if (this.x > canvas.width || this.x < 0) {
+            this.speedX = -this.speedX;
         }
-    }, 30);
+        
+        if (this.y > canvas.height || this.y < 0) {
+            this.speedY = -this.speedY;
+        }
+    }
+    
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
 }
 
-// Portal animation sequence
-function startPortalAnimation() {
-    // GSAP Timeline
-    const tl = gsap.timeline();
-    
-    // Fade out loading screen
-    tl.to('.loading-screen', {
-        opacity: 0,
-        duration: 1,
-        onComplete: () => {
-            document.querySelector('.loading-screen').style.display = 'none';
-        }
-    })
-    
-    // Fade in portal hero
-    .to('.portal-hero', {
-        opacity: 1,
-        duration: 1
-    })
-    
-    // Grow portal door
-    .to('.portal-door', {
-        width: '100vw',
-        height: '100vh',
-        duration: 0.5,
-        ease: 'power2.inOut',
-        onStart: () => {
-            if (soundEnabled) {
-                playSound(portalOpenSound);
-            }
-        }
-    })
-    
-    // Open the doors
-    .to('.door-left', {
-        x: '-100%',
-        duration: 1.5,
-        ease: 'power2.out'
-    }, '<')
-    .to('.door-right', {
-        x: '100%',
-        duration: 1.5,
-        ease: 'power2.out'
-    }, '<')
-    
-    // Show portal glow
-    .to('.portal-glow', {
-        width: '150vw',
-        height: '150vh',
-        opacity: 0.8,
-        duration: 1.5,
-        ease: 'power2.inOut'
-    }, '<')
-    
-    // Show content
-    .to('.content-container', {
-        opacity: 1,
-        duration: 1,
-        onComplete: () => {
-            if (soundEnabled) {
-                ambientSound.play().catch(e => console.warn('Could not play ambient sound:', e));
-            }
-            createParticles();
-            
-            // Make sure the button is clickable
-            makeButtonClickable();
-        }
-    })
-    
-    // Animate text lines
-    .to('.line1 span', {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out'
-    })
-    .to('.line2 span', {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out'
-    }, '-=0.4')
-    .to('.username-line span', {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out'
-    }, '-=0.4');
-}
-
-// Make sure the button is clickable
-function makeButtonClickable() {
-    const enterBtnLink = document.querySelector('.enter-btn-link');
-    
-    // Add a pulsing animation to draw attention
-    gsap.to('.enter-btn', {
-        scale: 1.05,
-        duration: 0.8,
-        repeat: -1,
-        yoyo: true,
-        ease: 'power1.inOut'
-    });
-    
-    // Add an event listener to ensure navigation works
-    enterBtnLink.addEventListener('click', function(e) {
-        // Navigate to main page
-        window.location.href = 'mainpage.html';
-    });
-    
-    // Make sure the button is visible and interactive
-    enterBtnLink.style.pointerEvents = 'auto';
-    enterBtnLink.style.cursor = 'pointer';
-    
-    // Add a tooltip or hint
-    const hint = document.createElement('div');
-    hint.textContent = 'Click to continue';
-    hint.style.color = 'var(--text-secondary)';
-    hint.style.fontSize = '0.9rem';
-    hint.style.marginTop = '1rem';
-    hint.style.opacity = '0';
-    
-    document.querySelector('.cta-container').appendChild(hint);
-    
-    gsap.to(hint, {
-        opacity: 1,
-        duration: 1,
-        delay: 1
-    });
-}
-
-// Create floating particles effect
-function createParticles() {
-    const particlesContainer = document.querySelector('.portal-particles');
-    const particleCount = 50;
-    
+// Initialize particles
+function initParticles() {
+    particles = [];
     for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.style.position = 'absolute';
-        particle.style.width = `${Math.random() * 5 + 2}px`;
-        particle.style.height = particle.style.width;
-        particle.style.backgroundColor = 'rgba(0, 200, 255, 0.6)'; // Match accent color
-        particle.style.borderRadius = '50%';
-        particle.style.top = `${Math.random() * 100}%`;
-        particle.style.left = `${Math.random() * 100}%`;
-        
-        particlesContainer.appendChild(particle);
-        
-        // Animate each particle
-        gsap.to(particle, {
-            y: `-=${Math.random() * 200 + 100}`,
-            x: `+=${Math.random() * 100 - 50}`,
-            opacity: 0,
-            duration: Math.random() * 5 + 3,
-            ease: 'power1.out',
-            onComplete: () => {
-                // Reset particle
-                particle.style.top = `${Math.random() * 100}%`;
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.opacity = '0.6';
-                
-                // Animate again
-                gsap.to(particle, {
-                    y: `-=${Math.random() * 200 + 100}`,
-                    x: `+=${Math.random() * 100 - 50}`,
-                    opacity: 0,
-                    duration: Math.random() * 5 + 3,
-                    ease: 'power1.out',
-                    repeat: -1
-                });
-            }
-        });
+        particles.push(new Particle());
     }
 }
 
-// Firebase integration
-function initFirebase() {
-    // Replace with your Firebase config
-    const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
-    };
-    
-    try {
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        
-        // Check authentication state
-        firebase.auth().onAuthStateChanged((user) => {
-            const usernameElement = document.getElementById('username');
+// Connect particles with lines
+function connectParticles() {
+    const maxDistance = 150;
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
             
-            if (user) {
-                // User is signed in
-                const displayName = user.displayName || user.email || "Explorer";
-                usernameElement.textContent = displayName;
-            } else {
-                // User is not signed in
-                usernameElement.textContent = "mysterious explorer";
+            if (distance < maxDistance) {
+                ctx.beginPath();
+                ctx.strokeStyle = body.classList.contains('dark-mode') ? 
+                    `rgba(0, 209, 255, ${0.1 - distance/maxDistance * 0.1})` : 
+                    `rgba(0, 128, 128, ${0.1 - distance/maxDistance * 0.1})`;
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
             }
-        });
-    } catch (error) {
-        console.error("Firebase initialization error:", error);
-        // Fallback if Firebase fails
-        document.getElementById('username').textContent = "mysterious explorer";
+        }
     }
 }
 
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    try {
-        initFirebase();
-    } catch (error) {
-        console.error("Firebase initialization error:", error);
-        // Fallback if Firebase fails
-        document.getElementById('username').textContent = "mysterious explorer";
+// Animation loop
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
     }
     
-    startLoadingAnimation();
+    connectParticles();
+    requestAnimationFrame(animate);
+}
+
+initParticles();
+animate();
+
+// Update particle colors when theme changes
+themeToggle.addEventListener('click', () => {
+    particles.forEach(particle => {
+        particle.color = body.classList.contains('dark-mode') ? 
+            `rgba(0, 209, 255, ${Math.random() * 0.3})` : 
+            `rgba(0, 128, 128, ${Math.random() * 0.3})`;
+    });
     
-    // Ensure the button is clickable
-    const enterBtnLink = document.querySelector('.enter-btn-link');
-    enterBtnLink.addEventListener('click', function() {
-        window.location.href = 'mainpage.html';
+    trailElements.forEach((trail, index) => {
+        trail.element.style.backgroundColor = body.classList.contains('dark-mode') ? 
+            `rgba(${0}, ${209 - index * 10}, ${255 - index * 10}, ${1 - index * 0.06})` : 
+            `rgba(${0}, ${128 - index * 5}, ${128 - index * 5}, ${1 - index * 0.06})`;
+    });
+});
+
+// Portal Animation
+const portfolioBtn = document.getElementById('portfolioBtn');
+const portalContainer = document.getElementById('portalContainer');
+const portalCenter = document.querySelector('.portal-center');
+const lightBeams = document.querySelector('.light-beams');
+const typewriterText = document.getElementById('typewriterText');
+const proceedBtn = document.getElementById('proceedBtn');
+
+portfolioBtn.addEventListener('click', () => {
+    // Hide the button
+    gsap.to(portfolioBtn, {
+        opacity: 0,
+        y: -50,
+        duration: 0.5,
+        onComplete: () => {
+            portfolioBtn.style.display = 'none';
+            portalContainer.style.display = 'flex';
+            
+            // Start portal animation
+            gsap.to(portalCenter, {
+                scale: 1,
+                duration: 1.5,
+                ease: "elastic.out(1, 0.5)"
+            });
+            
+            gsap.to(lightBeams, {
+                opacity: 0.8,
+                duration: 1,
+                delay: 0.5
+            });
+            
+            // Typewriter effect
+            setTimeout(() => {
+                const typed = new Typed('#typewriterText', {
+                    strings: ["Visitor, are you ready to visit Archishman's Archeverse?"],
+                    typeSpeed: 40,
+                    showCursor: true,
+                    cursorChar: '|',
+                    onComplete: () => {
+                        // Show proceed button
+                        setTimeout(() => {
+                            gsap.to(proceedBtn, {
+                                opacity: 1,
+                                scale: 1,
+                                duration: 0.8,
+                                ease: "back.out(1.7)"
+                            });
+                        }, 500);
+                    }
+                });
+            }, 1500);
+        }
+    });
+});
+
+// Parallax effect
+document.addEventListener('mousemove', (e) => {
+    const xPos = (e.clientX / window.innerWidth - 0.5) * 20;
+    const yPos = (e.clientY / window.innerHeight - 0.5) * 20;
+    
+    gsap.to('.hero', {
+        x: xPos,
+        y: yPos,
+        duration: 1
+    });
+    
+    gsap.to('.skills-container', {
+        x: xPos * 0.5,
+        y: yPos * 0.5,
+        rotateX: -yPos * 0.2,
+        rotateY: xPos * 0.2,
+        duration: 1
     });
 });
