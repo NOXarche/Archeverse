@@ -8,6 +8,8 @@ if (prefersReducedMotion) {
 
 // Loading screen animation with fluid motion
 window.addEventListener('DOMContentLoaded', () => {
+    createLoadingAnimation();
+    
     setTimeout(() => {
         const loadingScreen = document.querySelector('.loading-screen');
         gsap.to(loadingScreen, {
@@ -21,6 +23,51 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }, 1800);
 });
+
+function createLoadingAnimation() {
+    const loader = document.querySelector('.loader');
+    const loaderText = document.querySelector('.loader-text');
+    
+    // Create floating dots
+    for (let i = 0; i < 6; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'loading-dot';
+        loader.appendChild(dot);
+        
+        // Position dots in a circular formation
+        const angle = (i / 6) * Math.PI * 2;
+        const x = Math.cos(angle) * 40;
+        const y = Math.sin(angle) * 40;
+        
+        gsap.set(dot, {
+            x: x,
+            y: y,
+            background: body.classList.contains('dark-mode') ? 
+                `hsl(${i * 60}, 100%, 70%)` : 
+                `hsl(${i * 60}, 80%, 50%)`
+        });
+        
+        // Animate dots with staggered delay
+        gsap.to(dot, {
+            y: y - 20,
+            opacity: 0.3,
+            duration: 1,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            delay: i * 0.1
+        });
+    }
+    
+    // Animate loader text
+    gsap.to(loaderText, {
+        scale: 1.1,
+        duration: 1.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut"
+    });
+}
 
 function initializeAnimations() {
     // Initial animations with fluid motion
@@ -91,6 +138,60 @@ function initializeAnimations() {
     }, 2200);
 }
 
+// Create Skill Globe
+function createSkillGlobe() {
+    const skills = [
+        { icon: 'fab fa-html5', name: 'HTML5' },
+        { icon: 'fab fa-css3-alt', name: 'CSS3' },
+        { icon: 'fab fa-js', name: 'JavaScript' },
+        { icon: 'fab fa-react', name: 'React' },
+        { icon: 'fab fa-node-js', name: 'Node.js' },
+        { icon: 'fas fa-database', name: 'SQL' },
+        { icon: 'fab fa-python', name: 'Python' },
+        { icon: 'fas fa-chart-line', name: 'Data Analysis' },
+        { icon: 'fas fa-drafting-compass', name: 'AutoCAD' },
+        { icon: 'fas fa-cube', name: '3D Modeling' },
+        { icon: 'fab fa-git-alt', name: 'Git' },
+        { icon: 'fas fa-cloud', name: 'Cloud Computing' }
+    ];
+
+    const globeContainer = document.querySelector('.globe-container');
+    const radius = 120;
+    
+    skills.forEach((skill, i) => {
+        const skillElement = document.createElement('div');
+        skillElement.className = 'skill-icon';
+        skillElement.innerHTML = `<i class="${skill.icon}" title="${skill.name}"></i>`;
+        
+        // Position icons in a spherical formation
+        const phi = Math.acos(-1 + (2 * i) / skills.length);
+        const theta = Math.sqrt(skills.length * Math.PI) * phi;
+        
+        skillElement.style.transform = `
+            rotateY(${theta}rad)
+            rotateX(${phi}rad)
+            translateZ(${radius}px)
+        `;
+        
+        globeContainer.appendChild(skillElement);
+    });
+
+    // Make globe interactive with mouse
+    document.addEventListener('mousemove', (e) => {
+        if (prefersReducedMotion) return;
+        
+        const x = e.clientX / window.innerWidth - 0.5;
+        const y = e.clientY / window.innerHeight - 0.5;
+        
+        gsap.to('.globe-container', {
+            rotateY: `${x * 30}deg`,
+            rotateX: `${-y * 30}deg`,
+            duration: 2,
+            ease: "power2.out"
+        });
+    });
+}
+
 // Blob animation
 const blob = document.getElementById('blob');
 
@@ -149,6 +250,14 @@ function updateThemeColors() {
             blob.style.background = 'radial-gradient(circle, var(--bright-accent1), var(--bright-accent2))';
         }
     });
+    
+    // Update loading dots color based on theme
+    const loadingDots = document.querySelectorAll('.loading-dot');
+    loadingDots.forEach((dot, i) => {
+        dot.style.background = body.classList.contains('dark-mode') ? 
+            `hsl(${i * 60}, 100%, 70%)` : 
+            `hsl(${i * 60}, 80%, 50%)`;
+    });
 }
 
 // Custom cursor with fluid motion
@@ -161,7 +270,7 @@ if (!prefersReducedMotion && window.innerWidth > 768) {
         gsap.to(cursorFollower, {x: e.clientX, y: e.clientY, duration: 0.8, ease: "power3.out"});
     });
 
-    document.querySelectorAll('a, button, .fluid-card, .theme-toggle').forEach(el => {
+    document.querySelectorAll('a, button, .fluid-card, .theme-toggle, .skill-icon').forEach(el => {
         el.addEventListener('mouseenter', () => {
             gsap.to(cursor, {width: 40, height: 40, duration: 0.3, ease: "elastic.out(1, 0.3)"});
             gsap.to(cursorFollower, {width: 60, height: 60, duration: 0.3, ease: "elastic.out(1, 0.3)"});
@@ -427,9 +536,6 @@ function initCardEffects() {
                 ease: "power3.out"
             });
         });
-        
-        // Observe for scroll animations
-        animateOnScroll.observe(card);
     });
 }
 
@@ -472,9 +578,16 @@ function initParallaxEffect() {
 
 // Initialize everything when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    createLoadingAnimation();
     initCounters();
     initCardEffects();
     initParallaxEffect();
+    createSkillGlobe();
+    
+    // Add intersection observer for all sections
+    document.querySelectorAll('section').forEach(section => {
+        animateOnScroll.observe(section);
+    });
 });
 
 // Handle window resize
