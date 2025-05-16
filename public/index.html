@@ -21,19 +21,44 @@
         <i class="fas fa-moon active"></i>
     </div>
     
-    <canvas id="particleCanvas"></canvas>
+    <!-- Fluid blob animation -->
+    <div id="blob"></div>
+    <div id="blur"></div>
+    
+    <!-- SVG filters for blob effect -->
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display: none;">
+        <defs>
+            <filter id="goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+                <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+            </filter>
+            <filter id="blob-filter">
+                <feGaussianBlur stdDeviation="40" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="
+                  1 0 0 0 0  
+                  0 1 0 0 0  
+                  0 0 1 0 0  
+                  0 0 0 30 -10" result="blob" />
+                <feComposite in="SourceGraphic" in2="blob" operator="atop"/>
+            </filter>
+        </defs>
+    </svg>
+    
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
     
     <div class="container">
-        <section class="hero">
-            <h1>Archishman Das</h1>
+        <section class="hero fluid-section">
+            <div class="fluid-text">
+                <h1>Archishman Das</h1>
+            </div>
             <div class="tags">
                 <span>Civil Engineering</span>
                 <span>BS Data Science</span>
             </div>
             <p class="tagline">Engineering Meets Data & Design</p>
-            <button id="portfolioBtn">Visit My Portfolio in Detail</button>
+            <button id="portfolioBtn" class="fluid-btn">Visit My Portfolio in Detail</button>
         </section>
         
         <section id="portalContainer">
@@ -48,7 +73,7 @@
             <a href="mainpage.html" id="proceedBtn">PROCEED</a>
         </section>
         
-        <section class="counters">
+        <section class="counters fluid-section">
             <div class="counter">
                 <div class="counter-number" id="projectsCount">0</div>
                 <div class="counter-label">Projects</div>
@@ -64,17 +89,20 @@
         </section>
         
         <section class="cards-container">
-            <div class="card">
+            <div class="card fluid-card">
                 <div class="card-title">Projects</div>
                 <div class="card-content">Showcasing diverse projects in AutoCAD, Web Dev, and more.</div>
+                <div class="fluid-blob"></div>
             </div>
-            <div class="card">
+            <div class="card fluid-card">
                 <div class="card-title">Works</div>
                 <div class="card-content">Professional and academic works highlighting skills and achievements.</div>
+                <div class="fluid-blob"></div>
             </div>
-            <div class="card">
+            <div class="card fluid-card">
                 <div class="card-title">Journey</div>
                 <div class="card-content">My learning and growth journey in engineering and data science.</div>
+                <div class="fluid-blob"></div>
             </div>
         </section>
     </div>
