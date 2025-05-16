@@ -6,49 +6,50 @@ if (prefersReducedMotion) {
     document.body.classList.add('reduced-motion');
 }
 
-// Loading screen animation
+// Loading screen animation with fluid motion
 window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         const loadingScreen = document.querySelector('.loading-screen');
         gsap.to(loadingScreen, {
             opacity: 0,
-            duration: 0.5,
+            duration: 0.8,
+            ease: "power2.inOut",
             onComplete: () => {
                 loadingScreen.style.display = 'none';
                 initializeAnimations();
             }
         });
-    }, 1500);
+    }, 1800);
 });
 
 function initializeAnimations() {
-    // Initial animations
+    // Initial animations with fluid motion
     gsap.from('.hero', { 
         opacity: 0, 
         y: 40, 
-        duration: 1,
+        duration: 1.2,
         ease: "power3.out" 
     });
     
     gsap.from('.counter', {
         opacity: 0,
         y: 30,
-        duration: 0.8,
+        duration: 1,
         delay: 0.5,
-        stagger: 0.2,
+        stagger: 0.3,
         ease: "back.out(1.7)"
     });
     
-    gsap.from('.card', {
+    gsap.from('.fluid-card', {
         opacity: 0,
-        x: -30,
-        duration: 0.6,
+        y: 50,
+        duration: 1.2,
         delay: 1,
-        stagger: 0.15,
-        ease: "power2.out"
+        stagger: 0.2,
+        ease: "elastic.out(1, 0.75)"
     });
 
-    // Final welcome micro-interaction: particle burst
+    // Fluid welcome animation
     setTimeout(() => {
         const burstContainer = document.createElement('div');
         burstContainer.style.position = 'fixed';
@@ -57,34 +58,56 @@ function initializeAnimations() {
         burstContainer.style.transform = 'translate(-50%, -50%)';
         burstContainer.style.pointerEvents = 'none';
         burstContainer.style.zIndex = '10000';
+        burstContainer.style.filter = 'url(#goo)';
         document.body.appendChild(burstContainer);
 
-        for(let i=0; i<30; i++) {
+        for(let i=0; i<20; i++) {
             const particle = document.createElement('div');
             particle.style.position = 'absolute';
-            particle.style.width = '6px';
-            particle.style.height = '6px';
+            particle.style.width = '20px';
+            particle.style.height = '20px';
             particle.style.background = document.body.classList.contains('dark-mode') ? '#00D1FF' : '#008080';
             particle.style.borderRadius = '50%';
-            particle.style.top = '50%';
-            particle.style.left = '50%';
+            particle.style.top = '0';
+            particle.style.left = '0';
             burstContainer.appendChild(particle);
 
             const angle = Math.random() * 2 * Math.PI;
-            const distance = Math.random() * 100 + 50;
+            const distance = 50 + Math.random() * 100;
+            const duration = 1 + Math.random() * 1;
+            
             gsap.to(particle, {
                 x: Math.cos(angle) * distance,
                 y: Math.sin(angle) * distance,
                 opacity: 0,
-                duration: 1.5,
+                scale: 0.5 + Math.random(),
+                duration: duration,
                 ease: 'power2.out',
                 onComplete: () => particle.remove()
             });
         }
 
-        setTimeout(() => burstContainer.remove(), 2000);
-    }, 2000);
+        setTimeout(() => burstContainer.remove(), 2500);
+    }, 2200);
 }
+
+// Blob animation
+const blob = document.getElementById('blob');
+
+// Animate blob with mouse movement
+document.addEventListener('mousemove', (e) => {
+    if (prefersReducedMotion) return;
+    
+    const { clientX, clientY } = e;
+    
+    // Use GSAP for smooth animation
+    gsap.to(blob, {
+        left: `${clientX}px`,
+        top: `${clientY}px`,
+        duration: 2.5,
+        ease: "power3.out"
+    });
+});
 
 // Theme Toggle
 const themeToggle = document.querySelector('.theme-toggle');
@@ -98,6 +121,7 @@ if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matc
     body.classList.add('bright-mode');
     sunIcon.classList.add('active');
     moonIcon.classList.remove('active');
+    updateThemeColors();
 }
 
 themeToggle.addEventListener('click', () => {
@@ -112,198 +136,44 @@ themeToggle.addEventListener('click', () => {
         moonIcon.classList.add('active');
         sunIcon.classList.remove('active');
     }
+    updateThemeColors();
 });
 
-// Custom cursor
+function updateThemeColors() {
+    // Update fluid blobs color based on theme
+    const fluidBlobs = document.querySelectorAll('.fluid-blob');
+    fluidBlobs.forEach(blob => {
+        if (body.classList.contains('dark-mode')) {
+            blob.style.background = 'radial-gradient(circle, var(--dark-accent1), var(--dark-accent2))';
+        } else {
+            blob.style.background = 'radial-gradient(circle, var(--bright-accent1), var(--bright-accent2))';
+        }
+    });
+}
+
+// Custom cursor with fluid motion
 if (!prefersReducedMotion && window.innerWidth > 768) {
     const cursor = document.querySelector('.cursor');
     const cursorFollower = document.querySelector('.cursor-follower');
 
     document.addEventListener('mousemove', (e) => {
         gsap.to(cursor, {x: e.clientX, y: e.clientY, duration: 0.1});
-        gsap.to(cursorFollower, {x: e.clientX, y: e.clientY, duration: 0.4});
+        gsap.to(cursorFollower, {x: e.clientX, y: e.clientY, duration: 0.8, ease: "power3.out"});
     });
 
-    document.querySelectorAll('a, button, .card, .theme-toggle').forEach(el => {
+    document.querySelectorAll('a, button, .fluid-card, .theme-toggle').forEach(el => {
         el.addEventListener('mouseenter', () => {
-            gsap.to(cursor, {width: 40, height: 40, duration: 0.3});
-            gsap.to(cursorFollower, {width: 60, height: 60, duration: 0.3});
+            gsap.to(cursor, {width: 40, height: 40, duration: 0.3, ease: "elastic.out(1, 0.3)"});
+            gsap.to(cursorFollower, {width: 60, height: 60, duration: 0.3, ease: "elastic.out(1, 0.3)"});
         });
         el.addEventListener('mouseleave', () => {
-            gsap.to(cursor, {width: 20, height: 20, duration: 0.3});
-            gsap.to(cursorFollower, {width: 40, height: 40, duration: 0.3});
+            gsap.to(cursor, {width: 20, height: 20, duration: 0.3, ease: "elastic.out(1, 0.3)"});
+            gsap.to(cursorFollower, {width: 40, height: 40, duration: 0.3, ease: "elastic.out(1, 0.3)"});
         });
     });
 }
 
-// Particle background animation
-const canvas = document.getElementById('particleCanvas');
-const ctx = canvas.getContext('2d');
-
-let width, height;
-function resize() {
-    width = window.innerWidth;
-    height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-}
-resize();
-window.addEventListener('resize', resize);
-
-// Particle class
-class Particle {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.size = Math.random() * 3 + 1;
-        this.baseX = x;
-        this.baseY = y;
-        this.density = (Math.random() * 30) + 1;
-        this.color = body.classList.contains('dark-mode') ? '#00D1FF' : '#008080';
-    }
-    
-    draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.fill();
-    }
-    
-    update() {
-        // Check if we have mouse position
-        if (mouse.x !== undefined && mouse.y !== undefined) {
-            // Calculate distance between particle and mouse
-            let dx = mouse.x - this.x;
-            let dy = mouse.y - this.y;
-            let distance = Math.sqrt(dx * dx + dy * dy);
-            let forceDirectionX = dx / distance;
-            let forceDirectionY = dy / distance;
-            
-            // Max distance, past that the force will be 0
-            const maxDistance = 100;
-            let force = (maxDistance - distance) / maxDistance;
-            
-            // If we're close enough, apply force
-            if (distance < maxDistance) {
-                this.x += forceDirectionX * force * this.density;
-                this.y += forceDirectionY * force * this.density;
-            } else {
-                // If we're not close to the mouse, move back to original position
-                if (this.x !== this.baseX) {
-                    let dx = this.x - this.baseX;
-                    this.x -= dx/10;
-                }
-                if (this.y !== this.baseY) {
-                    let dy = this.y - this.baseY;
-                    this.y -= dy/10;
-                }
-            }
-        }
-    }
-}
-
-// Initialize particles
-const particlesArray = [];
-function initParticles() {
-    // Clear existing particles
-    particlesArray.length = 0;
-    
-    // Create particles in the shape of "AD" (Archishman Das initials)
-    // This is a simplified approach - in a real implementation, you'd use a more sophisticated
-    // method to draw text or shapes with particles
-    
-    // Create a grid of particles
-    const particleCount = 100;
-    const gridSize = Math.sqrt(particleCount);
-    
-    for (let i = 0; i < particleCount; i++) {
-        const x = Math.random() * width;
-        const y = Math.random() * height;
-        particlesArray.push(new Particle(x, y));
-    }
-    
-    // Additional particles in "A" shape
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const letterHeight = height * 0.3;
-    const letterWidth = width * 0.1;
-    
-    // Letter A
-    for (let i = 0; i < 30; i++) {
-        // Left leg of A
-        let x = centerX - letterWidth + (Math.random() * 10 - 5);
-        let y = centerY + letterHeight/2 - (i/30) * letterHeight + (Math.random() * 10 - 5);
-        particlesArray.push(new Particle(x, y));
-        
-        // Right leg of A
-        x = centerX + letterWidth + (Math.random() * 10 - 5);
-        y = centerY + letterHeight/2 - (i/30) * letterHeight + (Math.random() * 10 - 5);
-        particlesArray.push(new Particle(x, y));
-        
-        // Crossbar of A (only in middle section)
-        if (i > 10 && i < 20) {
-            x = centerX - letterWidth + (i/30) * letterWidth * 2 + (Math.random() * 10 - 5);
-            y = centerY + (Math.random() * 10 - 5);
-            particlesArray.push(new Particle(x, y));
-        }
-    }
-    
-    // Letter D
-    for (let i = 0; i < 30; i++) {
-        // Vertical bar of D
-        let x = centerX + letterWidth * 2 + (Math.random() * 10 - 5);
-        let y = centerY + letterHeight/2 - (i/30) * letterHeight + (Math.random() * 10 - 5);
-        particlesArray.push(new Particle(x, y));
-        
-        // Curved part of D
-        const angle = (i/30) * Math.PI;
-        x = centerX + letterWidth * 2 + Math.cos(angle) * letterWidth + (Math.random() * 10 - 5);
-        y = centerY - Math.sin(angle) * letterHeight/2 + (Math.random() * 10 - 5);
-        particlesArray.push(new Particle(x, y));
-    }
-}
-
-// Mouse interaction
-const mouse = {
-    x: undefined,
-    y: undefined,
-    radius: 100
-};
-
-window.addEventListener('mousemove', function(event) {
-    mouse.x = event.x;
-    mouse.y = event.y;
-});
-
-window.addEventListener('mouseout', function() {
-    mouse.x = undefined;
-    mouse.y = undefined;
-});
-
-// Animation loop
-function animate() {
-    if (prefersReducedMotion) return;
-    
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    for (let i = 0; i < particlesArray.length; i++) {
-        particlesArray[i].draw();
-        particlesArray[i].update();
-    }
-    
-    requestAnimationFrame(animate);
-}
-
-// Update particle colors when theme changes
-themeToggle.addEventListener('click', () => {
-    const newColor = body.classList.contains('dark-mode') ? '#00D1FF' : '#008080';
-    particlesArray.forEach(particle => {
-        particle.color = newColor;
-    });
-});
-
-// Portal pop-out animation
+// Portal pop-out animation with fluid motion
 const portfolioBtn = document.getElementById('portfolioBtn');
 const portalContainer = document.getElementById('portalContainer');
 const portalCenter = document.querySelector('.portal-center');
@@ -313,7 +183,7 @@ const typewriterText = document.getElementById('typewriterText');
 const proceedBtn = document.getElementById('proceedBtn');
 
 portfolioBtn.addEventListener('click', (e) => {
-    // Create mask for page transition
+    // Create fluid mask for page transition
     const mask = document.createElement('div');
     mask.style.position = 'fixed';
     mask.style.top = '0';
@@ -326,15 +196,16 @@ portfolioBtn.addEventListener('click', (e) => {
     mask.style.zIndex = '10000';
     mask.style.pointerEvents = 'none';
     mask.style.opacity = '0';
+    mask.style.filter = 'blur(30px)';
     document.body.appendChild(mask);
 
-    // Animate mask
+    // Animate mask with fluid motion
     gsap.to(mask, {
         opacity: 0.8,
-        duration: 0.5,
+        duration: 0.8,
         ease: 'power2.inOut',
         onComplete: () => {
-            // Hide the button with a pop effect
+            // Hide the button with a fluid effect
             gsap.to(portfolioBtn, {
                 opacity: 0,
                 scale: 0.5,
@@ -347,13 +218,13 @@ portfolioBtn.addEventListener('click', (e) => {
                     // Fade out mask
                     gsap.to(mask, {
                         opacity: 0,
-                        duration: 0.5,
+                        duration: 0.8,
                         onComplete: () => {
                             mask.remove();
                         }
                     });
                     
-                    // Animate portal rings
+                    // Animate portal rings with fluid motion
                     portalRings.forEach((ring, index) => {
                         gsap.to(ring, {
                             opacity: 0.8,
@@ -363,38 +234,48 @@ portfolioBtn.addEventListener('click', (e) => {
                                 gsap.to(ring, {
                                     scale: 1.5,
                                     opacity: 0,
-                                    duration: 1.5,
+                                    duration: 2,
                                     repeat: -1,
+                                    ease: "sine.inOut",
                                     delay: index * 0.2
                                 });
                             }
                         });
                     });
                     
-                    // Pop-out animation for portal center
+                    // Fluid pop-out animation for portal center
                     gsap.fromTo(portalCenter, {
                         scale: 0,
                         opacity: 0
                     }, {
                         scale: 1,
                         opacity: 1,
-                        duration: 1.5,
+                        duration: 1.8,
                         ease: 'elastic.out(1, 0.5)'
                     });
                     
-                    // Light beams fade in
+                    // Light beams fade in with pulsing
                     gsap.to(lightBeams, {
                         opacity: 0.9,
-                        duration: 1.2,
+                        duration: 1.5,
                         delay: 0.3,
-                        ease: 'power2.inOut'
+                        ease: 'power2.inOut',
+                        onComplete: () => {
+                            gsap.to(lightBeams, {
+                                opacity: 0.6,
+                                duration: 1.5,
+                                yoyo: true,
+                                repeat: -1,
+                                ease: "sine.inOut"
+                            });
+                        }
                     });
                     
-                    // Typewriter effect
+                    // Typewriter effect with fluid timing
                     setTimeout(() => {
                         const typed = new Typed('#typewriterText', {
                             strings: ["Visitor, are you ready to visit Archishman's Archeverse?"],
-                            typeSpeed: 35,
+                            typeSpeed: 40,
                             showCursor: true,
                             cursorChar: '|',
                             onComplete: () => {
@@ -402,8 +283,8 @@ portfolioBtn.addEventListener('click', (e) => {
                                     gsap.to(proceedBtn, {
                                         opacity: 1,
                                         scale: 1,
-                                        duration: 1,
-                                        ease: 'back.out(1.7)'
+                                        duration: 1.2,
+                                        ease: 'elastic.out(1, 0.5)'
                                     });
                                 }, 600);
                             }
@@ -415,7 +296,7 @@ portfolioBtn.addEventListener('click', (e) => {
     });
 });
 
-// Magnetic effect on buttons
+// Fluid magnetic effect on buttons
 const buttons = document.querySelectorAll('button, a');
 
 if (!prefersReducedMotion) {
@@ -424,15 +305,25 @@ if (!prefersReducedMotion) {
             const rect = button.getBoundingClientRect();
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
-            gsap.to(button, {x: x * 0.2, y: y * 0.2, duration: 0.3});
+            gsap.to(button, {
+                x: x * 0.3,
+                y: y * 0.3,
+                duration: 0.6,
+                ease: "power2.out"
+            });
         });
         button.addEventListener('mouseleave', () => {
-            gsap.to(button, {x: 0, y: 0, duration: 0.3});
+            gsap.to(button, {
+                x: 0,
+                y: 0,
+                duration: 0.6,
+                ease: "elastic.out(1, 0.3)"
+            });
         });
     });
 }
 
-// Live counters animation
+// Live counters animation with fluid easing
 function animateCounter(elementId, targetValue, duration) {
     const element = document.getElementById(elementId);
     const startValue = 0;
@@ -449,16 +340,16 @@ function animateCounter(elementId, targetValue, duration) {
     }, 50);
 }
 
-// Initialize counters when they come into view
+// Initialize counters when they come into view with fluid animation
 function initCounters() {
     const countersSection = document.querySelector('.counters');
     
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                animateCounter('projectsCount', 25, 2000); // 25 projects
-                animateCounter('worksCount', 12, 2000);    // 12 works
-                animateCounter('journeyCount', 5, 2000);   // 5 years
+                animateCounter('projectsCount', 25, 2500); // 25 projects
+                animateCounter('worksCount', 12, 2500);    // 12 works
+                animateCounter('journeyCount', 5, 2500);   // 5 years
                 observer.unobserve(entry.target);
             }
         });
@@ -467,31 +358,40 @@ function initCounters() {
     observer.observe(countersSection);
 }
 
-// Scroll-triggered animations
+// Scroll-triggered animations with fluid motion
 const animateOnScroll = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             gsap.from(entry.target, {
                 opacity: 0,
                 y: 50,
-                duration: 0.8,
-                ease: "power2.out"
+                duration: 1,
+                ease: "power3.out"
             });
             animateOnScroll.unobserve(entry.target);
         }
     });
 }, { threshold: 0.1 });
 
-// Card hover effects
+// Fluid card hover effects
 function initCardEffects() {
-    const cards = document.querySelectorAll('.card');
+    const cards = document.querySelectorAll('.fluid-card');
     
     cards.forEach(card => {
+        // Create fluid motion on hover
         card.addEventListener('mouseenter', () => {
             gsap.to(card, {
                 y: -15,
                 boxShadow: '0 15px 30px rgba(0, 209, 255, 0.5)',
-                duration: 0.4,
+                duration: 0.6,
+                ease: 'power2.out'
+            });
+            
+            const blob = card.querySelector('.fluid-blob');
+            gsap.to(blob, {
+                scale: 2,
+                opacity: 0.3,
+                duration: 0.8,
                 ease: 'power2.out'
             });
         });
@@ -500,8 +400,31 @@ function initCardEffects() {
             gsap.to(card, {
                 y: 0,
                 boxShadow: '0 4px 15px rgba(0, 209, 255, 0.3)',
-                duration: 0.4,
+                duration: 0.6,
                 ease: 'power2.out'
+            });
+            
+            const blob = card.querySelector('.fluid-blob');
+            gsap.to(blob, {
+                scale: 1,
+                opacity: 0.2,
+                duration: 0.8,
+                ease: 'power2.out'
+            });
+        });
+        
+        // Fluid movement on mousemove
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const blob = card.querySelector('.fluid-blob');
+            gsap.to(blob, {
+                left: x - 50,
+                top: y - 50,
+                duration: 1,
+                ease: "power3.out"
             });
         });
         
@@ -510,7 +433,7 @@ function initCardEffects() {
     });
 }
 
-// Parallax effect on mouse move
+// Fluid parallax effect on mouse move
 function initParallaxEffect() {
     document.addEventListener('mousemove', (e) => {
         if (prefersReducedMotion) return;
@@ -520,25 +443,28 @@ function initParallaxEffect() {
         
         const hero = document.querySelector('.hero');
         const counters = document.querySelector('.counters');
-        const cards = document.querySelectorAll('.card');
+        const cards = document.querySelectorAll('.fluid-card');
         
         gsap.to(hero, {
             x: mouseX * 20,
             y: mouseY * 20,
-            duration: 1
+            duration: 2,
+            ease: "power3.out"
         });
         
         gsap.to(counters, {
             x: mouseX * -15,
             y: mouseY * -15,
-            duration: 1
+            duration: 2,
+            ease: "power3.out"
         });
         
         cards.forEach((card, index) => {
             gsap.to(card, {
                 x: mouseX * (10 + index * 5),
                 y: mouseY * (10 + index * 5),
-                duration: 1
+                duration: 2,
+                ease: "power3.out"
             });
         });
     });
@@ -546,19 +472,17 @@ function initParallaxEffect() {
 
 // Initialize everything when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    initParticles();
     initCounters();
     initCardEffects();
     initParallaxEffect();
-    
-    // Start animation loop if not reduced motion
-    if (!prefersReducedMotion) {
-        animate();
-    }
 });
 
 // Handle window resize
 window.addEventListener('resize', () => {
-    resize();
-    initParticles();
+    // Reinitialize any size-dependent features
+    if (window.innerWidth <= 768) {
+        document.body.style.cursor = 'auto';
+    } else if (!prefersReducedMotion) {
+        document.body.style.cursor = 'none';
+    }
 });
