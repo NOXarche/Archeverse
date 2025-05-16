@@ -1,3 +1,27 @@
+// Add this at the beginning of script.js
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if Three.js is loaded
+    if (typeof THREE === 'undefined') {
+        console.error('Three.js is not loaded. Loading from CDN...');
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/three@0.148.0/build/three.min.js';
+        script.onload = () => {
+            console.log('Three.js loaded successfully');
+            initGalaxy();
+            initCounters();
+            initCardEffects();
+        };
+        document.head.appendChild(script);
+    } else {
+        console.log('Three.js is already loaded');
+        initGalaxy();
+        initCounters();
+        initCardEffects();
+    }
+});
+
+
+
 // Theme Toggle
 const themeToggle = document.querySelector('.theme-toggle');
 const sunIcon = document.querySelector('.fa-sun');
