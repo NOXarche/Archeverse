@@ -3,36 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archishman Das | Portfolio</title>
+    <title>Archishman Das | Engineering Meets Data</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <script src="https://unpkg.com/typed.js@2.0.16/dist/typed.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-force-3d@3.0.3/dist/d3-force-3d.min.js"></script>
 </head>
 <body class="dark-mode">
+    <!-- Loading Screen -->
     <div class="loading-screen">
-        <div class="loader">
-            <div class="loader-text">AD</div>
+        <div class="bridge-loader">
+            <div class="bridge-base"></div>
+            <div class="bridge-span"></div>
+            <div class="bridge-tower left"></div>
+            <div class="bridge-tower right"></div>
+            <div class="bridge-cable left"></div>
+            <div class="bridge-cable right"></div>
+            <div class="data-points"></div>
+        </div>
+        <div class="loading-metrics">
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <div class="loading-stats">Loading: <span id="loadingPercent">0%</span> → σ=<span id="loadingSigma">0.0</span></div>
         </div>
     </div>
 
+    <!-- Theme Toggle -->
     <div class="theme-toggle">
-        <i class="fas fa-sun"></i>
-        <i class="fas fa-moon active"></i>
+        <div class="toggle-icon">
+            <i class="fas fa-moon active"></i>
+            <i class="fas fa-sun"></i>
+        </div>
+        <div class="toggle-label">
+            <span class="dark-label active">Neon Metropolis</span>
+            <span class="light-label">Sunlit Construction</span>
+        </div>
     </div>
     
-    <!-- Fluid blob animation -->
-    <div id="blob"></div>
+    <!-- Sound Toggle -->
+    <div class="sound-toggle">
+        <i class="fas fa-volume-mute"></i>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <div class="scroll-progress"></div>
+    </div>
+    
+    <!-- Background Elements -->
+    <div id="neural-network" class="dark-bg-element"></div>
+    <div id="blueprint-grid" class="light-bg-element"></div>
+    <div id="blob" class="blob-effect"></div>
     <div id="blur"></div>
     
-    <!-- Skill Globe -->
-    <div class="skill-globe">
-        <div class="globe-container">
+    <!-- Skill Graph -->
+    <div class="skill-graph">
+        <div class="graph-container">
             <!-- Will be generated dynamically with JS -->
         </div>
     </div>
     
-    <!-- SVG filters for blob effect -->
+    <!-- SVG filters -->
     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display: none;">
         <defs>
             <filter id="goo">
@@ -49,23 +83,38 @@
                   0 0 0 30 -10" result="blob" />
                 <feComposite in="SourceGraphic" in2="blob" operator="atop"/>
             </filter>
+            <filter id="blueprint">
+                <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
         </defs>
     </svg>
     
-    <div class="cursor"></div>
-    <div class="cursor-follower"></div>
+    <!-- Custom Cursor -->
+    <div class="cursor">
+        <div class="cursor-dot"></div>
+        <div class="cursor-trail"></div>
+    </div>
+    <div class="cursor-follower">
+        <div class="cursor-grid"></div>
+        <div class="cursor-code">&lt;/&gt;</div>
+    </div>
     
+    <!-- Main Content -->
     <div class="container">
         <section class="hero fluid-section">
             <div class="fluid-text">
-                <h1>Archishman Das</h1>
+                <h1 class="glitch-text" data-text="Archishman Das">Archishman Das</h1>
             </div>
             <div class="tags">
-                <span>Civil Engineering</span>
-                <span>BS Data Science</span>
+                <span class="ce-tag"><i class="fas fa-drafting-compass"></i> Civil Engineering</span>
+                <span class="ds-tag"><i class="fas fa-database"></i> BS Data Science</span>
             </div>
-            <p class="tagline">Engineering Meets Data & Design</p>
-            <button id="portfolioBtn" class="fluid-btn">Visit My Portfolio in Detail</button>
+            <p class="tagline">Where <span class="highlight-text">Structural Design</span> meets <span class="highlight-text">Data Analysis</span></p>
+            <button id="portfolioBtn" class="fluid-btn">
+                <span class="btn-text">Visit My Portfolio in Detail</span>
+                <span class="btn-icon"><i class="fas fa-arrow-right"></i></span>
+            </button>
         </section>
         
         <section id="portalContainer">
@@ -75,44 +124,77 @@
                 <div class="portal-ring"></div>
                 <div class="portal-center"></div>
                 <div class="light-beams"></div>
+                <div class="data-particles"></div>
             </div>
             <div id="typewriterText"></div>
-            <a href="mainpage.html" id="proceedBtn">PROCEED</a>
+            <a href="mainpage.html" id="proceedBtn">
+                <span class="btn-text">PROCEED</span>
+                <span class="btn-icon"><i class="fas fa-chevron-right"></i></span>
+            </a>
         </section>
         
         <section class="counters fluid-section">
             <div class="counter">
                 <div class="counter-number" id="projectsCount">0</div>
                 <div class="counter-label">Projects</div>
+                <div class="counter-icon ce-icon"><i class="fas fa-building"></i></div>
             </div>
             <div class="counter">
                 <div class="counter-number" id="worksCount">0</div>
                 <div class="counter-label">Works</div>
+                <div class="counter-icon ds-icon"><i class="fas fa-chart-network"></i></div>
             </div>
             <div class="counter">
                 <div class="counter-number" id="journeyCount">0</div>
                 <div class="counter-label">Journey (Years)</div>
+                <div class="counter-icon hybrid-icon"><i class="fas fa-code-branch"></i></div>
             </div>
         </section>
         
         <section class="cards-container">
-            <div class="card fluid-card">
-                <div class="card-title">Projects</div>
-                <div class="card-content">Showcasing diverse projects in AutoCAD, Web Dev, and more.</div>
+            <div class="card fluid-card ce-card">
+                <div class="card-icon"><i class="fas fa-drafting-compass"></i></div>
+                <div class="card-title">Civil Engineering</div>
+                <div class="card-content">Showcasing diverse projects in AutoCAD, structural analysis, and sustainable design.</div>
+                <div class="card-action">
+                    <button class="card-btn">View Projects</button>
+                    <button class="card-btn simulation-btn">Run Simulation</button>
+                </div>
+                <div class="card-wireframe"></div>
                 <div class="fluid-blob"></div>
             </div>
-            <div class="card fluid-card">
-                <div class="card-title">Works</div>
-                <div class="card-content">Professional and academic works highlighting skills and achievements.</div>
+            
+            <div class="card fluid-card ds-card">
+                <div class="card-icon"><i class="fas fa-database"></i></div>
+                <div class="card-title">Data Science</div>
+                <div class="card-content">Exploring data analysis, machine learning models, and interactive visualizations.</div>
+                <div class="card-action">
+                    <button class="card-btn">View Projects</button>
+                    <button class="card-btn data-btn">Analyze Data</button>
+                </div>
+                <div class="card-chart"></div>
                 <div class="fluid-blob"></div>
             </div>
-            <div class="card fluid-card">
-                <div class="card-title">Journey</div>
-                <div class="card-content">My learning and growth journey in engineering and data science.</div>
+            
+            <div class="card fluid-card hybrid-card">
+                <div class="card-icon"><i class="fas fa-code-branch"></i></div>
+                <div class="card-title">Hybrid Approach</div>
+                <div class="card-content">Combining engineering principles with data-driven insights for innovative solutions.</div>
+                <div class="card-action">
+                    <button class="card-btn">View Journey</button>
+                    <button class="card-btn hybrid-btn">Explore Fusion</button>
+                </div>
+                <div class="card-hybrid-visual"></div>
                 <div class="fluid-blob"></div>
             </div>
         </section>
     </div>
+    
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>© Built with <span class="code-font">concrete.css</span> and <span class="code-font">pandas.py</span></p>
+        </div>
+    </footer>
     
     <script src="script.js"></script>
 </body>
