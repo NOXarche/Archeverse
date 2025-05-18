@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
             opacity: 0.15 
         });
         
-        // Connect each node to several nodes in the next layer
+              // Connect each node to several nodes in the next layer
         for (let layer = 0; layer < layers - 1; layer++) {
             const startIdx = layer === 0 ? 0 : nodesPerLayer.slice(0, layer).reduce((a, b) => a + b, 0);
             const endIdx = startIdx + nodesPerLayer[layer];
@@ -449,9 +449,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function updateBackgroundEffects() {
-        createParticles();
-        createBinaryCode();
-        createSkyscrapers();
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        
+        if (currentTheme === 'dark') {
+            createRobotWave();
+            createBinaryCode();
+            createProcessor();
+        } else {
+            createParticles();
+        }
+    }
+    
+    // Create Robot Wave Animation for Dark Mode
+    function createRobotWave() {
+        const particlesContainer = document.querySelector('.particles');
+        if (!particlesContainer) return;
+        particlesContainer.innerHTML = '';
+
+        // Create a robot icon using Font Awesome
+        const robot = document.createElement('div');
+        robot.className = 'robot-wave';
+        
+        const robotIcon = document.createElement('i');
+        robotIcon.className = 'fas fa-robot';
+        robot.appendChild(robotIcon);
+
+        particlesContainer.appendChild(robot);
+    }
+    
+    // Create Modern Processor Animation for Dark Mode
+    function createProcessor() {
+        const aiContainer = document.querySelector('.ai-visualization');
+        if (!aiContainer) return;
+        aiContainer.innerHTML = '';
+        
+        const processor = document.createElement('div');
+        processor.className = 'processor';
+        
+        // Create processor core
+        const core = document.createElement('div');
+        core.className = 'processor-core';
+        processor.appendChild(core);
+        
+        // Create circuit outline
+        const circuit = document.createElement('div');
+        circuit.className = 'processor-circuit';
+        processor.appendChild(circuit);
+        
+        // Create circuit lines
+        const lines = ['h1', 'h2', 'v1', 'v2'];
+        lines.forEach(line => {
+            const lineEl = document.createElement('div');
+            lineEl.className = `processor-line processor-line-${line}`;
+            processor.appendChild(lineEl);
+        });
+        
+        // Create nodes
+        for (let i = 0; i < 8; i++) {
+            const node = document.createElement('div');
+            node.className = 'processor-node';
+            
+            const angle = (i / 8) * Math.PI * 2;
+            const radius = 80;
+            
+            node.style.left = `calc(50% + ${Math.cos(angle) * radius}px)`;
+            node.style.top = `calc(50% + ${Math.sin(angle) * radius}px)`;
+            
+            processor.appendChild(node);
+        }
+        
+        aiContainer.appendChild(processor);
     }
     
     function createParticles() {
@@ -461,7 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
         particlesContainer.innerHTML = '';
         
         const currentTheme = document.documentElement.getAttribute('data-theme');
-        const particleCount = currentTheme === 'dark' ? 30 : 40;
+        const particleCount = 40;
         
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
@@ -478,11 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
             particle.style.height = `${size}px`;
             particle.style.opacity = opacity;
             
-            if (currentTheme === 'dark') {
-                particle.style.backgroundColor = Math.random() > 0.5 ? 'var(--dark-accent1)' : 'var(--dark-accent2)';
-            } else {
-                particle.style.backgroundColor = Math.random() > 0.5 ? 'var(--bright-accent1)' : 'var(--bright-accent2)';
-            }
+            particle.style.backgroundColor = Math.random() > 0.5 ? 'var(--bright-accent1)' : 'var(--bright-accent2)';
             
             particlesContainer.appendChild(particle);
             animateParticle(particle);
@@ -540,51 +603,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             stream.textContent = binaryText;
             binaryContainer.appendChild(stream);
-        }
-    }
-    
-    function createSkyscrapers() {
-        const skyscrapersContainer = document.querySelector('.skyscrapers');
-        if (!skyscrapersContainer) return;
-        
-        skyscrapersContainer.innerHTML = '';
-        
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        if (currentTheme !== 'dark') return;
-        
-        const buildingCount = 12;
-        
-        for (let i = 0; i < buildingCount; i++) {
-            const skyscraper = document.createElement('div');
-            skyscraper.className = 'skyscraper';
-            
-            const width = Math.random() * 30 + 20;
-            const height = Math.random() * 150 + 100;
-            const left = (i / buildingCount) * 100;
-            
-            skyscraper.style.width = `${width}px`;
-            skyscraper.style.height = `${height}px`;
-            skyscraper.style.left = `${left}%`;
-            skyscraper.style.bottom = '0';
-            
-            // Create windows
-            const windowCount = Math.floor((height / 15) * (width / 15));
-            
-            for (let j = 0; j < windowCount; j++) {
-                const windowEl = document.createElement('div');
-                windowEl.className = 'skyscraper-window';
-                windowEl.style.width = '2px';
-                windowEl.style.height = '2px';
-                windowEl.style.position = 'absolute';
-                windowEl.style.background = 'var(--dark-accent1)';
-                windowEl.style.left = `${Math.random() * 100}%`;
-                windowEl.style.top = `${Math.random() * 100}%`;
-                windowEl.style.opacity = Math.random() > 0.5 ? '1' : '0.5';
-                
-                skyscraper.appendChild(windowEl);
-            }
-            
-            skyscrapersContainer.appendChild(skyscraper);
         }
     }
     
@@ -832,3 +850,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
