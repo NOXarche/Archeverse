@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Archeverse | Archishman Das</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="mainpage.css">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 </head>
 <body>
     <!-- Header/Navigation -->
@@ -18,7 +20,10 @@
             <div class="nav-links">
                 <a href="#projects" class="nav-link">Projects</a>
                 <a href="#skills" class="nav-link">Skills</a>
+                <a href="#journey" class="nav-link">Journey</a>
+                <a href="#blogs" class="nav-link">Blogs</a>
                 <a href="#contact" class="nav-link">Contact</a>
+                <a href="admin.html" class="admin-btn"><i class="fas fa-user-shield"></i> Admin</a>
             </div>
         </nav>
     </header>
@@ -28,6 +33,9 @@
         <h1>Archishman Das</h1>
         <div class="title-tags">
             <span id="typewriter"></span>
+        </div>
+        <div class="current-status">
+            <span class="status-indicator"><span class="pulse-dot"></span> Currently working at XYZ Tech Solutions</span>
         </div>
     </section>
 
@@ -39,6 +47,9 @@
     <!-- Projects Section -->
     <section id="projects" class="projects-section">
         <h2 class="section-title">Featured Projects</h2>
+        <div class="section-subtitle">
+            <span class="current-indicator"><span class="blink-dot"></span> Current Projects</span>
+        </div>
         <div class="projects-grid">
             <div class="project-card">
                 <div class="card-inner">
@@ -94,11 +105,36 @@
                 </div>
             </div>
         </div>
+        
+        <div class="case-study-carousel">
+            <h3>Case Study Highlights</h3>
+            <div class="carousel-container">
+                <div class="carousel-slide">
+                    <div class="case-phase">
+                        <h4>Problem</h4>
+                        <p>Bridge structural integrity monitoring was manual and error-prone</p>
+                    </div>
+                    <div class="case-phase">
+                        <h4>Solution</h4>
+                        <p>Implemented IoT sensor network with ML-based anomaly detection</p>
+                    </div>
+                    <div class="case-phase">
+                        <h4>Impact</h4>
+                        <p>Reduced maintenance costs by 32% and prevented 3 critical failures</p>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Skills Galaxy Section -->
     <section id="skills" class="skills-section">
         <h2 class="section-title">My Skills</h2>
+        
         <div class="skill-galaxy">
             <div class="orbit" data-speed="0.02">
                 <div class="skill" data-tooltip="AutoCAD">
@@ -121,6 +157,372 @@
                 </div>
             </div>
         </div>
+        
+        <div class="skills-meter">
+            <h3>Technical Proficiency</h3>
+            <div class="skill-bars">
+                <div class="skill-bar">
+                    <span class="skill-name">Python</span>
+                    <div class="meter">
+                        <span class="progress" data-value="90"></span>
+                    </div>
+                    <span class="skill-percent">90%</span>
+                </div>
+                <div class="skill-bar">
+                    <span class="skill-name">Machine Learning</span>
+                    <div class="meter">
+                        <span class="progress" data-value="85"></span>
+                    </div>
+                    <span class="skill-percent">85%</span>
+                </div>
+                <div class="skill-bar">
+                    <span class="skill-name">Structural Analysis</span>
+                    <div class="meter">
+                        <span class="progress" data-value="95"></span>
+                    </div>
+                    <span class="skill-percent">95%</span>
+                </div>
+                <div class="skill-bar">
+                    <span class="skill-name">Data Visualization</span>
+                    <div class="meter">
+                        <span class="progress" data-value="80"></span>
+                    </div>
+                    <span class="skill-percent">80%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="competency-radar">
+            <h3>Skill Ecosystem</h3>
+            <div class="radar-chart-container">
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience & Education Timeline Section -->
+    <section id="journey" class="journey-section">
+        <h2 class="section-title">My Journey</h2>
+        
+        <div class="timeline-container">
+            <!-- Experience Timeline -->
+            <div class="timeline experience-timeline">
+                <h3><i class="fas fa-briefcase"></i> Professional Experience</h3>
+                <div class="timeline-items">
+                    <div class="timeline-item">
+                        <div class="timeline-dot current"></div>
+                        <div class="timeline-date">2023-Present</div>
+                        <div class="timeline-content">
+                            <h4>Data Scientist</h4>
+                            <h5>XYZ Tech Solutions</h5>
+                            <ul>
+                                <li>Developed predictive models for infrastructure maintenance</li>
+                                <li>Implemented AI-driven structural analysis systems</li>
+                                <li>Reduced project costs by 18% through optimization algorithms</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2020-2023</div>
+                        <div class="timeline-content">
+                            <h4>Structural Engineer</h4>
+                            <h5>ABC Engineering</h5>
+                            <ul>
+                                <li>Led design teams for major infrastructure projects</li>
+                                <li>Implemented data-driven design optimization techniques</li>
+                                <li>Collaborated with cross-functional teams on smart city initiatives</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2018-2020</div>
+                        <div class="timeline-content">
+                            <h4>Research Assistant</h4>
+                            <h5>University Research Lab</h5>
+                            <ul>
+                                <li>Conducted research on AI applications in structural engineering</li>
+                                <li>Published 3 papers in peer-reviewed journals</li>
+                                <li>Developed prototype for smart structural monitoring system</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Education Timeline -->
+            <div class="timeline education-timeline">
+                <h3><i class="fas fa-graduation-cap"></i> Education</h3>
+                <div class="timeline-items">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2020-2022</div>
+                        <div class="timeline-content">
+                            <h4>MSc in Data Science</h4>
+                            <h5>University of Tech</h5>
+                            <ul>
+                                <li>Specialized in Structural Data Analysis</li>
+                                <li>Thesis: "AI Applications in Civil Engineering"</li>
+                                <li>GPA: 3.9/4.0</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2014-2018</div>
+                        <div class="timeline-content">
+                            <h4>BSc in Civil Engineering</h4>
+                            <h5>Engineering Institute</h5>
+                            <ul>
+                                <li>Focus on Structural Engineering</li>
+                                <li>Minor in Computer Science</li>
+                                <li>Graduated with Honors</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="milestone-map">
+            <h3>Career Milestones</h3>
+            <div class="map-path"></div>
+            <div class="milestones">
+                <div class="milestone" data-year="2018">
+                    <div class="milestone-marker"></div>
+                    <div class="milestone-popup">Started Engineering Degree</div>
+                </div>
+                <div class="milestone" data-year="2020">
+                    <div class="milestone-marker"></div>
+                    <div class="milestone-popup">First Research Publication</div>
+                </div>
+                <div class="milestone" data-year="2022">
+                    <div class="milestone-marker"></div>
+                    <div class="milestone-popup">Completed Masters in Data Science</div>
+                </div>
+                <div class="milestone" data-year="2023">
+                    <div class="milestone-marker"></div>
+                    <div class="milestone-popup">Led Major Infrastructure Project</div>
+                </div>
+                <div class="milestone" data-year="2024">
+                    <div class="milestone-marker"></div>
+                    <div class="milestone-popup">Patent Filed for Smart Bridge System</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section id="achievements" class="achievements-section">
+        <h2 class="section-title">Achievements</h2>
+        <div class="achievements-container">
+            <div class="achievement-card">
+                <div class="achievement-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <h3>Best Paper Award</h3>
+                <p>International Conference on Structural Engineering, 2023</p>
+            </div>
+            <div class="achievement-card">
+                <div class="achievement-icon">
+                    <i class="fas fa-patent"></i>
+                </div>
+                <h3>Patent Filed</h3>
+                <p>Smart Bridge Monitoring System using AI</p>
+            </div>
+            <div class="achievement-card">
+                <div class="achievement-icon">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <h3>Project Excellence</h3>
+                <p>Led team that reduced costs by 32% on major infrastructure project</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications Section -->
+    <section id="certifications" class="certifications-section">
+        <h2 class="section-title">Certifications</h2>
+        <div class="cert-slider">
+            <div class="cert-card">
+                <img src="https://placehold.co/400x300/00A896/white?text=AWS+Certification" alt="AWS Certified">
+                <div class="cert-overlay">
+                    <h4>AWS Certified Solutions Architect</h4>
+                    <p>2023</p>
+                    <button class="verify-btn">Verify</button>
+                </div>
+            </div>
+            <div class="cert-card">
+                <img src="https://placehold.co/400x300/A020F0/white?text=TensorFlow+Certification" alt="TensorFlow Developer">
+                <div class="cert-overlay">
+                    <h4>TensorFlow Developer Certificate</h4>
+                    <p>2022</p>
+                    <button class="verify-btn">Verify</button>
+                </div>
+            </div>
+            <div class="cert-card">
+                <img src="https://placehold.co/400x300/00F5D4/white?text=PMP+Certification" alt="PMP Certified">
+                <div class="cert-overlay">
+                    <h4>Project Management Professional</h4>
+                    <p>2021</p>
+                    <button class="verify-btn">Verify</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blogs Section -->
+    <section id="blogs" class="blogs-section">
+        <h2 class="section-title">Featured Blogs</h2>
+        <div class="blogs-grid">
+            <div class="blog-card">
+                <div class="blog-image">
+                    <img src="https://placehold.co/600x400/00A896/white?text=Blog+Image" alt="Blog Post">
+                    <div class="blog-tag">Engineering</div>
+                </div>
+                <div class="blog-content">
+                    <h3>The Future of Smart Infrastructure</h3>
+                    <p class="blog-date"><i class="far fa-calendar-alt"></i> May 10, 2025</p>
+                    <p class="blog-excerpt">Exploring how AI and IoT are revolutionizing infrastructure monitoring and maintenance...</p>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+            </div>
+            <div class="blog-card">
+                <div class="blog-image">
+                    <img src="https://placehold.co/600x400/A020F0/white?text=Blog+Image" alt="Blog Post">
+                    <div class="blog-tag">Data Science</div>
+                </div>
+                <div class="blog-content">
+                    <h3>Machine Learning in Structural Analysis</h3>
+                    <p class="blog-date"><i class="far fa-calendar-alt"></i> April 22, 2025</p>
+                    <p class="blog-excerpt">How predictive models are changing the way we approach structural engineering challenges...</p>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+            </div>
+            <div class="blog-card">
+                <div class="blog-image">
+                    <img src="https://placehold.co/600x400/00F5D4/white?text=Blog+Image" alt="Blog Post">
+                    <div class="blog-tag">Career</div>
+                </div>
+                <div class="blog-content">
+                    <h3>Bridging Engineering and Data Science</h3>
+                    <p class="blog-date"><i class="far fa-calendar-alt"></i> March 15, 2025</p>
+                    <p class="blog-excerpt">My journey from traditional civil engineering to data-driven solutions...</p>
+                    <a href="#" class="read-more">Read More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LinkedIn Posts Section -->
+    <section id="linkedin" class="linkedin-section">
+        <h2 class="section-title">LinkedIn Updates</h2>
+        <div class="linkedin-posts">
+            <div class="linkedin-post">
+                <div class="post-header">
+                    <img src="https://placehold.co/100x100/A020F0/white?text=AD" alt="Profile Picture" class="profile-pic">
+                    <div class="post-meta">
+                        <h4>Archishman Das</h4>
+                        <p>Data Scientist & Structural Engineer</p>
+                        <span class="post-date">2 days ago</span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>Excited to share my latest research on AI-driven structural health monitoring! #DataScience #CivilEngineering</p>
+                    <img src="https://placehold.co/600x400/00A896/white?text=LinkedIn+Post+Image" alt="Post Image" class="post-image">
+                </div>
+                <div class="post-stats">
+                    <span><i class="far fa-thumbs-up"></i> 243 Likes</span>
+                    <span><i class="far fa-comment"></i> 37 Comments</span>
+                    <span><i class="far fa-share-square"></i> 18 Shares</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resume Display Section -->
+    <section id="resume" class="resume-section">
+        <h2 class="section-title">Resume</h2>
+        <div class="resume-container">
+            <div class="resume-preview">
+                <iframe src="https://placehold.co/800x1000/A020F0/white?text=Resume+Preview" frameborder="0"></iframe>
+            </div>
+            <div class="resume-actions">
+                <a href="#" class="download-btn"><i class="fas fa-download"></i> Download PDF</a>
+                <button class="share-btn"><i class="fas fa-share-alt"></i> Share</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Endorsements Section -->
+    <section id="endorsements" class="endorsements-section">
+        <h2 class="section-title">Skill Endorsements</h2>
+        <div class="endorsements-container">
+            <div class="endorsement-skill">
+                <h3>Machine Learning</h3>
+                <div class="endorsers">
+                    <div class="endorser-avatar" data-name="John Doe">JD</div>
+                    <div class="endorser-avatar" data-name="Sarah Smith">SS</div>
+                    <div class="endorser-avatar" data-name="Mike Johnson">MJ</div>
+                    <div class="endorser-count">+12</div>
+                </div>
+                <button class="endorse-btn">Endorse</button>
+            </div>
+            <div class="endorsement-skill">
+                <h3>Structural Analysis</h3>
+                <div class="endorsers">
+                    <div class="endorser-avatar" data-name="Emily Chen">EC</div>
+                    <div class="endorser-avatar" data-name="Robert Brown">RB</div>
+                    <div class="endorser-avatar" data-name="Lisa Wang">LW</div>
+                    <div class="endorser-count">+8</div>
+                </div>
+                <button class="endorse-btn">Endorse</button>
+            </div>
+            <div class="endorsement-skill">
+                <h3>Python</h3>
+                <div class="endorsers">
+                    <div class="endorser-avatar" data-name="Alex Turner">AT</div>
+                    <div class="endorser-avatar" data-name="Jessica Lee">JL</div>
+                    <div class="endorser-avatar" data-name="David Kim">DK</div>
+                    <div class="endorser-count">+15</div>
+                </div>
+                <button class="endorse-btn">Endorse</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fun Zone Section -->
+    <section id="funzone" class="funzone-section">
+        <h2 class="section-title">Fun Zone</h2>
+        <div class="fun-container">
+            <div class="coding-challenge">
+                <h3>Coding Challenge</h3>
+                <div class="challenge-description">
+                    <p>Can you optimize this algorithm?</p>
+                    <pre><code>def analyze_structure(data):
+    results = []
+    for i in range(len(data)):
+        results.append(data[i] * 0.85)
+    return results</code></pre>
+                </div>
+                <div class="challenge-input">
+                    <textarea placeholder="Write your optimized solution here..."></textarea>
+                    <button class="submit-challenge">Submit</button>
+                </div>
+            </div>
+            <div class="interactive-module">
+                <h3>Bridge Load Simulator</h3>
+                <div class="simulator-container">
+                    <canvas id="bridgeSimulator"></canvas>
+                    <div class="simulator-controls">
+                        <label>Load: <input type="range" min="0" max="100" value="50" id="loadControl"></label>
+                        <label>Span: <input type="range" min="10" max="50" value="30" id="spanControl"></label>
+                        <button id="simulateBtn">Simulate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Engineering Calculator Widget -->
@@ -135,64 +537,85 @@
         <h3 class="model-title">Interactive 3D Model</h3>
     </div>
 
-    <!-- Live Code Sandbox -->
-    <div class="sandbox" data-lang="python">
-        <h3>Code Sandbox</h3>
-        <pre><code>def analyze_structure(sensors):
-    # Apply safety factor
-    return [s * 0.85 for s in sensors]
-    
-# Example sensor readings
-data = [10, 20, 30, 40, 50]
-result = analyze_structure(data)
-print(f"Analysis results: {result}")</code></pre>
-        <button class="run-btn">Run Simulation</button>
-    </div>
-
-    <!-- Social Container -->
-    <div id="contact" class="social-container">
-        <div class="linkedin-embed">
-            <h3>LinkedIn Profile</h3>
-            <p>Connect with me on LinkedIn for professional updates and collaborations</p>
-            <a href="#" class="social-btn"><i class="fab fa-linkedin"></i> View Profile</a>
-        </div>
-        <div class="visitor-counter">
-            <i class="fas fa-eye"></i>
-            <span id="counter">1247</span>
-            <p>Portfolio Views</p>
-        </div>
-    </div>
-
-    <!-- Resume Uploader -->
-    <section class="uploader-section">
-        <h2 class="section-title">Resume Analysis</h2>
-        <div class="uploader">
-            <label for="resume-upload">
-                <svg class="ce-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
-                <svg class="ds-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                </svg>
-                <span>Upload Resume for Analysis</span>
-            </label>
-            <input type="file" id="resume-upload">
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-container">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <p>archishman@archeverse.com</p>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <p>+1 (555) 123-4567</p>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p>San Francisco, CA</p>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="contact-form">
+                <div class="form-group">
+                    <input type="text" placeholder="Your Name">
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Your Email">
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Your Message"></textarea>
+                </div>
+                <button class="send-btn">Send Message</button>
+            </div>
         </div>
     </section>
 
     <!-- AI Chatbot -->
     <div class="chatbot">
-        <p>Ask Archie: <span class="typing-indicator"></span></p>
-        <input type="text" placeholder="How did you solve X problem?">
+        <div class="chatbot-header">
+            <h4>Ask Archie</h4>
+            <button class="minimize-chat"><i class="fas fa-minus"></i></button>
+        </div>
+        <div class="chat-messages">
+            <div class="message bot-message">
+                <p>Hi there! I'm Archie, Archishman's AI assistant. How can I help you today?</p>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" placeholder="Ask me anything...">
+            <button class="send-chat"><i class="fas fa-paper-plane"></i></button>
+        </div>
     </div>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2025 Archeverse | Archishman Das</p>
+        <div class="footer-content">
+            <div class="footer-logo">ArcheVerse</div>
+            <div class="footer-links">
+                <a href="#projects">Projects</a>
+                <a href="#skills">Skills</a>
+                <a href="#journey">Journey</a>
+                <a href="#blogs">Blogs</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ArcheVerse | Archishman Das</p>
+            <div class="visitor-counter">
+                <i class="fas fa-eye"></i>
+                <span id="counter">1247</span> Views
+            </div>
+        </div>
     </footer>
 
     <!-- Theme Toggle -->
@@ -200,6 +623,6 @@ print(f"Analysis results: {result}")</code></pre>
         <i class="fas fa-moon"></i>
     </div>
 
-    <script src="mainpage.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
