@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - ArcheVerse</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="auth.css">
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
+    <!-- Firebase Auth -->
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-auth-compat.js"></script>
+    <!-- Firebase UI -->
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" />
+</head>
+<body>
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <div class="background-elements">
+        <div class="floating-element" id="element1"></div>
+        <div class="floating-element" id="element2"></div>
+        <div class="floating-element" id="element3"></div>
+        <div class="floating-element" id="element4"></div>
+    </div>
+    
+    <div class="code-snippets">
+        <pre class="snippet" id="snippet1"><code>// Data Analysis
+import pandas as pd
+import numpy as np
+
+def analyze_structure(data):
+    return np.mean(data) * 0.85</code></pre>
+        
+        <pre class="snippet" id="snippet2"><code>// Structural Analysis
+function calculateBeamLoad(length, width) {
+    return length * 0.75 + Math.pow(width/10, 2);
+}</code></pre>
+        
+        <pre class="snippet" id="snippet3"><code>// Machine Learning Model
+model = Sequential([
+    Dense(128, activation='relu'),
+    Dropout(0.2),
+    Dense(1, activation='sigmoid')
+])</code></pre>
+    </div>
+    
+    <div class="auth-container">
+        <div class="logo-container">
+            <span class="logo">ArcheVerse</span>
+        </div>
+        
+        <h2>Admin Authentication</h2>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="login">Login</button>
+            <button class="tab-btn" data-tab="register">Register</button>
+        </div>
+        
+        <div class="tab-content active" id="login">
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+            
+            <div class="divider">
+                <span>or</span>
+            </div>
+            
+            <button id="googleSignIn" class="google-btn">
+                <i class="fab fa-google"></i>
+                Sign in with Google
+            </button>
+        </div>
+        
+        <div class="tab-content" id="register">
+            <form id="registerForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="registerName" placeholder="Full Name" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                </div>
+                
+                <button type="submit" class="auth-btn">Register</button>
+            </form>
+        </div>
+        
+        <div id="firebaseui-auth-container"></div>
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+    
+    <div class="visual-elements">
+        <div class="data-visualization">
+            <canvas id="dataChart"></canvas>
+        </div>
+        <div class="structure-model">
+            <div class="model-container" id="modelContainer"></div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>
