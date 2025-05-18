@@ -10,8 +10,19 @@ const firebaseConfig = {
   measurementId: "G-G2QJ69V5DN"
 };
 
+// Initialize Firebase (commented out until needed)
+// const app = firebase.initializeApp(firebaseConfig);
+// const analytics = firebase.analytics();
+// const db = firebase.firestore();
+// const storage = firebase.storage();
+
 // Initialize libraries after DOM content loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Register GSAP ScrollTrigger plugin if available
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+    }
+    
     // Theme Toggling
     const themeToggle = document.getElementById('themeToggle');
     const htmlElement = document.documentElement;
@@ -43,6 +54,16 @@ document.addEventListener('DOMContentLoaded', function() {
             startGradientAnimation();
         } else {
             stopGradientAnimation();
+        }
+        
+        // Update radar chart colors if it exists
+        if (window.skillRadarChart) {
+            updateChartColors(window.skillRadarChart);
+        }
+        
+        // Update 3D model colors if it exists
+        if (window.scene) {
+            updateModelColors();
         }
     });
     
@@ -102,7 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
             strings: [
                 "Civil Engineer", 
                 "Data Scientist", 
-                "AI Researcher"
+                "AI Researcher",
+                "Structural Engineer",
+                "Tech Innovator"
             ],
             typeSpeed: 50,
             backSpeed: 30,
@@ -133,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Add animation classes based on element type
                     if (entry.target.classList.contains('project-card')) {
                         entry.target.classList.add('animated-fadeInUp');
-                    } else if (entry.target.classList.contains('node') || 
+                    } else if (entry.target.classList.contains('timeline-item') || 
                                entry.target.classList.contains('skill')) {
                         entry.target.classList.add('animated-fadeInRight');
                     }
@@ -141,12 +164,32 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }, { threshold: 0.1 });
         
-        document.querySelectorAll('.section-title, .project-card, .skill, .sandbox, .calc-widget').forEach(el => {
+        document.querySelectorAll('.section-title, .project-card, .skill, .timeline-item, .achievement-card, .blog-card, .cert-card').forEach(el => {
             observer.observe(el);
         });
     };
     
     observeElements();
+    
+    // Initialize Skill Bars Animation
+    const animateSkillBars = () => {
+        const skillBars = document.querySelectorAll('.progress');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const value = entry.target.getAttribute('data-value');
+                    entry.target.style.width = `${value}%`;
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        skillBars.forEach(bar => {
+            observer.observe(bar);
+        });
+    };
+    
+    animateSkillBars();
     
     // Update visitor counter (simulated)
     const counterElement = document.getElementById('counter');
@@ -196,98 +239,372 @@ document.addEventListener('DOMContentLoaded', function() {
         return length * 0.75 + Math.pow(length/10, 2);
     }
     
-    // Resume upload handling
-    const resumeUpload = document.getElementById('resume-upload');
-    if (resumeUpload) {
-        resumeUpload.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                // Here you would normally upload to Firebase
-                // For demo purposes, just show an alert
-                alert(`Resume "${file.name}" selected. In production, this would be uploaded to Firebase for analysis.`);
+    // Initialize Radar Chart for Skills
+    if (typeof Chart !== 'undefined' && document.getElementById('radarChart')) {
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        
+        // Get theme colors
+        const ceAccent = getComputedStyle(document.documentElement).getPropertyValue('--ce-accent').trim() || '#00A896';
+        const dsAccent = getComputedStyle(document.documentElement).getPropertyValue('--ds-accent').trim() || '#A020F0';
+        
+        window.skillRadarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Engineering', 'Data Science', 'Programming', 'Research', 'Project Management', 'AI/ML'],
+                datasets: [{
+                    label: 'Skill Level',
+                    data: [95, 85, 80, 90, 75, 88],
+                    backgroundColor: `rgba(${hexToRgb(ceAccent)}, 0.2)`,
+                    borderColor: dsAccent,
+                    pointBackgroundColor: ceAccent,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: dsAccent
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 20,
+                            backdropColor: 'transparent'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        angleLines: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        pointLabels: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
             }
         });
     }
     
-    // AI Chatbot functionality
-    const chatInput = document.querySelector('.chatbot input');
-    const typingIndicator = document.querySelector('.typing-indicator');
-    
-    if (chatInput && typingIndicator) {
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && chatInput.value.trim() !== '') {
-                const question = chatInput.value;
-                chatInput.value = '';
-                
-                // Show typing indicator
-                typingIndicator.style.display = 'inline-block';
-                
-                // Simulate AI response after delay
-                setTimeout(() => {
-                    typingIndicator.style.display = 'none';
-                    alert(`You asked: ${question}\n\nThis would connect to a real AI service in production.`);
-                }, 1500);
-            }
-        });
+    // Function to update chart colors when theme changes
+    function updateChartColors(chart) {
+        if (!chart) return;
+        
+        const ceAccent = getComputedStyle(document.documentElement).getPropertyValue('--ce-accent').trim() || '#00A896';
+        const dsAccent = getComputedStyle(document.documentElement).getPropertyValue('--ds-accent').trim() || '#A020F0';
+        const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || '#E2E2E2';
+        
+        chart.data.datasets[0].backgroundColor = `rgba(${hexToRgb(ceAccent)}, 0.2)`;
+        chart.data.datasets[0].borderColor = dsAccent;
+        chart.data.datasets[0].pointBackgroundColor = ceAccent;
+        chart.data.datasets[0].pointHoverBorderColor = dsAccent;
+        
+        chart.options.scales.r.pointLabels.color = textColor;
+        chart.options.scales.r.grid.color = 'rgba(255, 255, 255, 0.1)';
+        chart.options.scales.r.angleLines.color = 'rgba(255, 255, 255, 0.1)';
+        
+        chart.update();
     }
     
-    // Live Code Sandbox
-    const runButton = document.querySelector('.run-btn');
-    
-    if (runButton) {
-        runButton.addEventListener('click', () => {
-            runButton.textContent = 'Running...';
-            
-            // Simulate code execution
-            setTimeout(() => {
-                runButton.textContent = 'Run Simulation';
-                alert('Code simulation complete! Results: [8.5, 17.0, 25.5, 34.0, 42.5]');
-            }, 1000);
-        });
-    }
-    
-    // Physics-based hover effects for cards
-    if (typeof gsap !== 'undefined') {
-        document.querySelectorAll('.project-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                if (card.querySelector('.card-inner').style.transform.includes('rotateY(180deg)')) return;
-                
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                
-                gsap.to(card, {
-                    x: (x - rect.width/2) * 0.05,
-                    y: (y - rect.height/2) * 0.05,
-                    rotationY: (x - rect.width/2) * 0.03,
-                    rotationX: (y - rect.height/2) * -0.03,
-                    duration: 0.5
-                });
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                gsap.to(card, {
-                    x: 0,
-                    y: 0,
-                    rotationY: 0,
-                    rotationX: 0,
-                    duration: 0.5
-                });
-            });
-        });
-    } else {
-        console.log("GSAP not loaded");
-    }
-    
-    // Easter egg for recruiters
-    document.addEventListener('keydown', (e) => {
-        if (e.code === 'KeyA' && e.altKey) {
-            showSecretContactForm();
+    // Helper function to convert hex to rgb
+    function hexToRgb(hex) {
+        // Remove # if present
+        hex = hex.replace('#', '');
+        
+        // Convert 3-digit hex to 6-digits
+        if (hex.length === 3) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
         }
+        
+        // Convert hex to rgb
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        
+        return `${r}, ${g}, ${b}`;
+    }
+    
+    // Timeline Animation with GSAP
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        // Animate timeline path drawing
+        gsap.utils.toArray('.timeline-items').forEach(timeline => {
+            gsap.from(timeline, {
+                scrollTrigger: {
+                    trigger: timeline,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                onStart: () => {
+                    timeline.classList.add('in-viewport');
+                }
+            });
+        });
+        
+        // Add animation delays for staggered effect
+        document.querySelectorAll('.timeline-item').forEach((item, index) => {
+            item.style.transitionDelay = `${index * 0.1}s`;
+        });
+    }
+    
+    // Milestone Map Animation
+    const milestones = document.querySelectorAll('.milestone');
+    milestones.forEach(milestone => {
+        milestone.addEventListener('mouseenter', () => {
+            milestone.querySelector('.milestone-marker').style.transform = 'scale(1.3)';
+            milestone.querySelector('.milestone-marker').style.background = getComputedStyle(document.documentElement).getPropertyValue('--ds-accent');
+        });
+        
+        milestone.addEventListener('mouseleave', () => {
+            milestone.querySelector('.milestone-marker').style.transform = '';
+            milestone.querySelector('.milestone-marker').style.background = '';
+        });
     });
     
-    function showSecretContactForm() {
-        alert("You found the secret contact form! In production, this would show a direct contact method for recruiters.");
+    // AI Chatbot functionality
+    const chatInput = document.querySelector('.chat-input input');
+    const sendChat = document.querySelector('.send-chat');
+    const chatMessages = document.querySelector('.chat-messages');
+    const minimizeChat = document.querySelector('.minimize-chat');
+    
+    if (chatInput && sendChat && chatMessages) {
+        const sendMessage = () => {
+            const message = chatInput.value.trim();
+            if (message === '') return;
+            
+            // Add user message
+            const userMessageElement = document.createElement('div');
+            userMessageElement.classList.add('message', 'user-message');
+            userMessageElement.innerHTML = `<p>${message}</p>`;
+            chatMessages.appendChild(userMessageElement);
+            
+            // Clear input
+            chatInput.value = '';
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Simulate bot typing
+            setTimeout(() => {
+                // Add bot message
+                const botMessageElement = document.createElement('div');
+                botMessageElement.classList.add('message', 'bot-message');
+                botMessageElement.innerHTML = `<p>I'm a simulated AI assistant. In production, I would respond to your query: "${message}"</p>`;
+                chatMessages.appendChild(botMessageElement);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        };
+        
+        sendChat.addEventListener('click', sendMessage);
+        
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Minimize chat functionality
+        if (minimizeChat) {
+            minimizeChat.addEventListener('click', () => {
+                const chatbot = document.querySelector('.chatbot');
+                chatbot.classList.toggle('minimized');
+                
+                if (chatbot.classList.contains('minimized')) {
+                    minimizeChat.innerHTML = '<i class="fas fa-plus"></i>';
+                    chatMessages.style.display = 'none';
+                    chatInput.parentElement.style.display = 'none';
+                } else {
+                    minimizeChat.innerHTML = '<i class="fas fa-minus"></i>';
+                    chatMessages.style.display = 'flex';
+                    chatInput.parentElement.style.display = 'flex';
+                }
+            });
+        }
+    }
+    
+    // Endorsement functionality
+    const endorseBtns = document.querySelectorAll('.endorse-btn');
+    endorseBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const skill = this.parentElement;
+            const endorsers = skill.querySelector('.endorsers');
+            const endorserCount = skill.querySelector('.endorser-count');
+            
+            // Check if already endorsed (for demo purposes)
+            if (this.classList.contains('endorsed')) {
+                alert('You have already endorsed this skill!');
+                return;
+            }
+            
+            // Create new endorser avatar with user initials (demo)
+            const userInitials = 'YU'; // "You"
+            const newEndorser = document.createElement('div');
+            newEndorser.classList.add('endorser-avatar');
+            newEndorser.setAttribute('data-name', 'You');
+            newEndorser.textContent = userInitials;
+            
+            // Insert before the count element
+            endorsers.insertBefore(newEndorser, endorserCount);
+            
+            // Update count
+            const currentCount = parseInt(endorserCount.textContent.replace('+', ''));
+            endorserCount.textContent = `+${currentCount - 1}`;
+            
+            // Mark as endorsed
+            this.classList.add('endorsed');
+            this.textContent = 'Endorsed';
+            this.style.background = getComputedStyle(document.documentElement).getPropertyValue('--success');
+            this.style.color = 'white';
+        });
+    });
+    
+    // Coding Challenge functionality
+    const submitChallenge = document.querySelector('.submit-challenge');
+    if (submitChallenge) {
+        submitChallenge.addEventListener('click', function() {
+            const codeInput = document.querySelector('.challenge-input textarea').value.trim();
+            
+            if (codeInput === '') {
+                alert('Please write your solution first!');
+                return;
+            }
+            
+            // Simple check for optimization (just for demo)
+            if (codeInput.includes('map') || codeInput.includes('comprehension') || codeInput.includes('lambda')) {
+                alert('Great job! Your solution uses optimization techniques!');
+            } else {
+                alert('Your solution works but could be more optimized. Try using list comprehensions or map functions!');
+            }
+        });
+    }
+    
+    // Bridge Simulator
+    const bridgeSimulator = document.getElementById('bridgeSimulator');
+    const simulateBtn = document.getElementById('simulateBtn');
+    const loadControl = document.getElementById('loadControl');
+    const spanControl = document.getElementById('spanControl');
+    
+    if (bridgeSimulator && simulateBtn && loadControl && spanControl) {
+        const ctx = bridgeSimulator.getContext('2d');
+        
+        // Set canvas dimensions
+        bridgeSimulator.width = bridgeSimulator.offsetWidth;
+        bridgeSimulator.height = bridgeSimulator.offsetHeight;
+        
+        // Draw initial bridge
+        drawBridge(parseInt(loadControl.value), parseInt(spanControl.value));
+        
+        simulateBtn.addEventListener('click', () => {
+            const load = parseInt(loadControl.value);
+            const span = parseInt(spanControl.value);
+            
+            // Animate bridge deflection
+            animateBridgeDeflection(load, span);
+        });
+        
+        // Update bridge on control change
+        loadControl.addEventListener('input', () => {
+            drawBridge(parseInt(loadControl.value), parseInt(spanControl.value));
+        });
+        
+        spanControl.addEventListener('input', () => {
+            drawBridge(parseInt(loadControl.value), parseInt(spanControl.value));
+        });
+        
+        function drawBridge(load, span) {
+            // Clear canvas
+            ctx.clearRect(0, 0, bridgeSimulator.width, bridgeSimulator.height);
+            
+            // Calculate bridge parameters
+            const bridgeWidth = bridgeSimulator.width * 0.8;
+            const bridgeHeight = 10;
+            const startX = (bridgeSimulator.width - bridgeWidth) / 2;
+            const startY = bridgeSimulator.height / 2;
+            
+            // Draw supports
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ce-accent');
+            ctx.fillRect(startX - 10, startY - 20, 20, 40);
+            ctx.fillRect(startX + bridgeWidth - 10, startY - 20, 20, 40);
+            
+            // Draw bridge deck
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-primary');
+            
+            // Calculate deflection based on load and span
+            const maxDeflection = (load / 100) * 30 * (span / 50);
+            
+            // Draw curved bridge deck
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.quadraticCurveTo(
+                startX + bridgeWidth / 2, 
+                startY + maxDeflection,
+                startX + bridgeWidth, 
+                startY
+            );
+            ctx.lineTo(startX + bridgeWidth, startY + bridgeHeight);
+            ctx.quadraticCurveTo(
+                startX + bridgeWidth / 2, 
+                startY + bridgeHeight + maxDeflection,
+                startX, 
+                startY + bridgeHeight
+            );
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw load arrow
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ds-accent');
+            ctx.beginPath();
+            ctx.moveTo(startX + bridgeWidth / 2, startY - 40);
+            ctx.lineTo(startX + bridgeWidth / 2 - 10, startY - 20);
+            ctx.lineTo(startX + bridgeWidth / 2 + 10, startY - 20);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw load value
+            ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-primary');
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${load} kN`, startX + bridgeWidth / 2, startY - 50);
+            
+            // Draw span value
+            ctx.fillText(`Span: ${span} m`, startX + bridgeWidth / 2, startY + 40);
+        }
+        
+        function animateBridgeDeflection(load, span) {
+            let progress = 0;
+            const duration = 30; // frames
+            const originalLoad = load;
+            
+            function animate() {
+                progress++;
+                
+                // Apply dynamic load for animation
+                const animatedLoad = originalLoad * (1 + Math.sin(progress / 5) * 0.2);
+                drawBridge(animatedLoad, span);
+                
+                if (progress < duration) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Reset to original state
+                    drawBridge(originalLoad, span);
+                }
+            }
+            
+            animate();
+        }
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            bridgeSimulator.width = bridgeSimulator.offsetWidth;
+            bridgeSimulator.height = bridgeSimulator.offsetHeight;
+            drawBridge(parseInt(loadControl.value), parseInt(spanControl.value));
+        });
     }
     
     // Initialize 3D Model Viewer if Three.js is available
@@ -301,7 +618,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('model-viewer');
         if (!container) return;
         
-        const scene = new THREE.Scene();
+        window.scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         
@@ -311,19 +628,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create a bridge-like structure
         const group = new THREE.Group();
         
+        // Get theme colors
+        const ceAccent = getComputedStyle(document.documentElement).getPropertyValue('--ce-accent').trim() || '#00A896';
+        const dsAccent = getComputedStyle(document.documentElement).getPropertyValue('--ds-accent').trim() || '#A020F0';
+        
         // Base platform
         const platformGeometry = new THREE.BoxGeometry(10, 0.5, 3);
-        const platformMaterial = new THREE.MeshBasicMaterial({ 
-            color: getComputedStyle(document.documentElement).getPropertyValue('--ce-accent').trim() || '#00A896'
-        });
+        const platformMaterial = new THREE.MeshBasicMaterial({ color: ceAccent });
         const platform = new THREE.Mesh(platformGeometry, platformMaterial);
         group.add(platform);
         
         // Pillars
         const pillarGeometry = new THREE.CylinderGeometry(0.2, 0.2, 3, 32);
-        const pillarMaterial = new THREE.MeshBasicMaterial({ 
-            color: getComputedStyle(document.documentElement).getPropertyValue('--ds-accent').trim() || '#A020F0'
-        });
+        const pillarMaterial = new THREE.MeshBasicMaterial({ color: dsAccent });
         
         const pillar1 = new THREE.Mesh(pillarGeometry, pillarMaterial);
         pillar1.position.set(-4, -1.5, 0);
@@ -332,6 +649,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const pillar2 = new THREE.Mesh(pillarGeometry, pillarMaterial);
         pillar2.position.set(4, -1.5, 0);
         group.add(pillar2);
+        
+        // Add data points (spheres)
+        const dataPointGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+        const dataPointMaterial = new THREE.MeshBasicMaterial({ color: dsAccent });
+        
+        for (let i = -4; i <= 4; i += 1) {
+            const dataPoint = new THREE.Mesh(dataPointGeometry, dataPointMaterial);
+            dataPoint.position.set(i, 0.5, 0);
+            group.add(dataPoint);
+        }
         
         // Add the group to the scene
         scene.add(group);
@@ -377,11 +704,140 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
+        // Function to update model colors when theme changes
+        window.updateModelColors = function() {
+            const ceAccent = getComputedStyle(document.documentElement).getPropertyValue('--ce-accent').trim() || '#00A896';
+            const dsAccent = getComputedStyle(document.documentElement).getPropertyValue('--ds-accent').trim() || '#A020F0';
+            
+            platformMaterial.color.set(ceAccent);
+            pillarMaterial.color.set(dsAccent);
+            dataPointMaterial.color.set(dsAccent);
+        };
+        
         // Handle window resize
         window.addEventListener('resize', () => {
             camera.aspect = container.clientWidth / container.clientHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+    }
+    
+    // Carousel functionality
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    const carouselSlide = document.querySelector('.carousel-slide');
+    
+    if (prevBtn && nextBtn && carouselSlide) {
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide > div');
+        const totalSlides = slides.length;
+        
+        nextBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        });
+        
+        prevBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+        });
+        
+        function updateCarousel() {
+            const offset = -currentSlide * 100;
+            carouselSlide.style.transform = `translateX(${offset}%)`;
+        }
+    }
+    
+    // Contact form functionality
+    const sendBtn = document.querySelector('.send-btn');
+    if (sendBtn) {
+        sendBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const nameInput = document.querySelector('.contact-form input[type="text"]');
+            const emailInput = document.querySelector('.contact-form input[type="email"]');
+            const messageInput = document.querySelector('.contact-form textarea');
+            
+            if (!nameInput.value || !emailInput.value || !messageInput.value) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Simulate form submission
+            this.textContent = 'Sending...';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.textContent = 'Message Sent!';
+                this.style.background = getComputedStyle(document.documentElement).getPropertyValue('--success');
+                
+                // Reset form
+                nameInput.value = '';
+                emailInput.value = '';
+                messageInput.value = '';
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    this.textContent = 'Send Message';
+                    this.style.background = '';
+                    this.disabled = false;
+                }, 3000);
+            }, 1500);
+        });
+    }
+    
+    // Easter egg for recruiters
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'KeyA' && e.altKey) {
+            showSecretContactForm();
+        }
+    });
+    
+    function showSecretContactForm() {
+        const secretForm = document.createElement('div');
+        secretForm.className = 'secret-contact';
+        secretForm.innerHTML = `
+            <div class="secret-contact-inner">
+                <h3>Direct Contact for Recruiters</h3>
+                <p>You found the secret contact form! Please reach out directly:</p>
+                <p><strong>Email:</strong> recruiter@archeverse.com</p>
+                <p><strong>Phone:</strong> +1 (555) 987-6543</p>
+                <button id="closeSecret">Close</button>
+            </div>
+        `;
+        
+        document.body.appendChild(secretForm);
+        
+        // Add styles
+        secretForm.style.position = 'fixed';
+        secretForm.style.top = '0';
+        secretForm.style.left = '0';
+        secretForm.style.width = '100%';
+        secretForm.style.height = '100%';
+        secretForm.style.background = 'rgba(0,0,0,0.8)';
+        secretForm.style.display = 'flex';
+        secretForm.style.justifyContent = 'center';
+        secretForm.style.alignItems = 'center';
+        secretForm.style.zIndex = '9999';
+        
+        const inner = secretForm.querySelector('.secret-contact-inner');
+        inner.style.background = getComputedStyle(document.documentElement).getPropertyValue('--secondary-bg');
+        inner.style.padding = '2rem';
+        inner.style.borderRadius = '8px';
+        inner.style.maxWidth = '400px';
+        inner.style.textAlign = 'center';
+        
+        const closeBtn = document.getElementById('closeSecret');
+        closeBtn.style.background = getComputedStyle(document.documentElement).getPropertyValue('--ds-accent');
+        closeBtn.style.color = 'white';
+        closeBtn.style.border = 'none';
+        closeBtn.style.padding = '0.5rem 1rem';
+        closeBtn.style.borderRadius = '4px';
+        closeBtn.style.marginTop = '1rem';
+        closeBtn.style.cursor = 'pointer';
+        
+        closeBtn.addEventListener('click', () => {
+            document.body.removeChild(secretForm);
         });
     }
 });
