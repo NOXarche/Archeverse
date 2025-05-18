@@ -4,8 +4,8 @@
     --dark-bg: #121212;
     --dark-card: #1E1E1E;
     --dark-text: #FFFFFF;
-    --dark-accent1: #00E676; /* Emerald */
-    --dark-accent2: #536DFE; /* Sapphire */
+    --dark-accent1: #536DFE; /* Blue */
+    --dark-accent2: #FF4081; /* Pink */
     --dark-accent3: #7C4DFF; /* Amethyst */
     --dark-accent4: #00B0FF; /* Azure */
     
@@ -35,7 +35,7 @@
     
     /* Grid & Blueprint settings */
     --grid-size: 24px;
-    --grid-color-dark: rgba(0, 230, 118, 0.07);
+    --grid-color-dark: rgba(83, 109, 254, 0.07);
     --grid-color-light: rgba(93, 64, 55, 0.1);
     
     /* Accessibility */
@@ -73,7 +73,7 @@ body {
 html[data-theme="dark"] body {
     background-color: var(--dark-bg);
     color: var(--dark-text);
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+CjxyZWN0IHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgZmlsbD0iIzEyMTIxMiI+PC9yZWN0Pgo8cGF0aCBkPSJNMzYgMTBhNiA2IDAgMCAxIDEyIDBBNiA2IDAgMCAxIDYwIDEwQTYgNiAwIDAgMSA0OCAyMCBBNiA2IDAgMCAxIDM2IDEwWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBFNjc2IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4wNCIgPjwvcGF0aD4KPHBhdGggZD0iTTEyIDEwYTYgNiAwIDAgMSAxMiAwQTYgNiAwIDAgMSAzNiAxMEE2IDYgMCAwIDEgMjQgMjAgQTYgNiAwIDAgMSAxMiAxMFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzUzNkRGRSIgc3Ryb2tlLXdpZHRoPSIwLjUiIG9wYWNpdHk9IjAuMDQiID48L3BhdGg+CjxwYXRoIGQ9Ik0xMiAzNGE2IDYgMCAwIDEgMTIgMEE2IDYgMCAwIDEgMzYgMzRBNiA2IDAgMCAxIDI0IDQ0IEE2IDYgMCAwIDEgMTIgMzRaIiBmaWxsPSJub25lIiBzdHJva2U9IiM3QzRERkYiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjA0IiA+PC9wYXRoPgo8L3N2Zz4=');
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCI+CjxyZWN0IHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgZmlsbD0iIzEyMTIxMiI+PC9yZWN0Pgo8cGF0aCBkPSJNMzYgMTBhNiA2IDAgMCAxIDEyIDBBNiA2IDAgMCAxIDYwIDEwQTYgNiAwIDAgMSA0OCAyMCBBNiA2IDAgMCAxIDM2IDEwWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNTM2REZFIiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4wNCIgPjwvcGF0aD4KPHBhdGggZD0iTTEyIDEwYTYgNiAwIDAgMSAxMiAwQTYgNiAwIDAgMSAzNiAxMEE2IDYgMCAwIDEgMjQgMjAgQTYgNiAwIDAgMSAxMiAxMFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGNDA4MSIgc3Ryb2tlLXdpZHRoPSIwLjUiIG9wYWNpdHk9IjAuMDQiID48L3BhdGg+CjxwYXRoIGQ9Ik0xMiAzNGE2IDYgMCAwIDEgMTIgMEE2IDYgMCAwIDEgMzYgMzRBNiA2IDAgMCAxIDI0IDQ0IEE2IDYgMCAwIDEgMTIgMzRaIiBmaWxsPSJub25lIiBzdHJva2U9IiM3QzRERkYiIHN0cm9rZS13aWR0aD0iMC41IiBvcGFjaXR5PSIwLjA0IiA+PC9wYXRoPgo8L3N2Zz4=');
     background-size: 120px 120px;
 }
 
@@ -146,9 +146,9 @@ html[data-theme="dark"] .bridge-bg {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--dark-accent1);
+    background: var(--dark-accent2);
     border-radius: 10px;
-    box-shadow: 0 0 20px var(--dark-accent1);
+    box-shadow: 0 0 20px var(--dark-accent2);
     animation: pulse 2s infinite ease-in-out;
 }
 
@@ -156,14 +156,14 @@ html[data-theme="dark"] .bridge-bg {
     position: absolute;
     width: 100%;
     height: 100%;
-    border: 2px solid var(--dark-accent2);
+    border: 2px solid var(--dark-accent1);
     border-radius: 15px;
     box-sizing: border-box;
 }
 
 .processor-line {
     position: absolute;
-    background: var(--dark-accent2);
+    background: var(--dark-accent1);
 }
 
 .processor-line-h1 {
@@ -436,9 +436,10 @@ html[data-theme="light"] .sound-toggle {
 /* Custom Cursor */
 .cursor {
     position: fixed;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
+    background: linear-gradient(135deg, #536DFE, #FF4081);
     pointer-events: none;
     mix-blend-mode: difference;
     z-index: 9999;
@@ -457,16 +458,8 @@ html[data-theme="light"] .sound-toggle {
     transition: transform 0.4s ease, width 0.4s ease, height 0.4s ease;
 }
 
-html[data-theme="dark"] .cursor {
-    background: rgba(0, 230, 118, 0.7);
-}
-
 html[data-theme="dark"] .cursor-follower {
-    border: 1px solid rgba(0, 230, 118, 0.5);
-}
-
-html[data-theme="light"] .cursor {
-    background: rgba(93, 64, 55, 0.7);
+    border: 1px solid #FF4081;
 }
 
 html[data-theme="light"] .cursor-follower {
@@ -503,7 +496,7 @@ html[data-theme="light"] .cursor-follower {
 }
 
 html[data-theme="dark"] .model-glow {
-    background: radial-gradient(circle, var(--dark-accent1), transparent 70%);
+    background: radial-gradient(circle, var(--dark-accent2), transparent 70%);
 }
 
 html[data-theme="light"] .model-glow {
@@ -544,7 +537,7 @@ html[data-theme="light"] .model-glow {
 }
 
 html[data-theme="dark"] .logo {
-    text-shadow: 0 0 15px rgba(0, 230, 118, 0.5); 
+    text-shadow: 0 0 15px rgba(83, 109, 254, 0.5); 
 }
 
 html[data-theme="light"] .logo {
@@ -662,7 +655,7 @@ html[data-theme="light"] .ds-skills {
 html[data-theme="dark"] .skill-icon {
     background-color: var(--dark-card);
     color: var(--dark-accent1);
-    box-shadow: 0 5px 15px rgba(0, 230, 118, 0.3);
+    box-shadow: 0 5px 15px rgba(83, 109, 254, 0.3);
 }
 
 html[data-theme="light"] .skill-icon {
@@ -718,12 +711,12 @@ html[data-theme="light"] .skill-icon {
 html[data-theme="dark"] .enter-btn {
     background: linear-gradient(45deg, var(--dark-accent1), var(--dark-accent2));
     color: white;
-    box-shadow: 0 0 15px rgba(0, 230, 118, 0.5);
+    box-shadow: 0 0 15px rgba(83, 109, 254, 0.5);
 }
 
 html[data-theme="dark"] .enter-btn:hover {
     transform: translateY(-8px);
-    box-shadow: 0 0 25px rgba(0, 230, 118, 0.8);
+    box-shadow: 0 0 25px rgba(83, 109, 254, 0.8);
 }
 
 html[data-theme="light"] .enter-btn {
@@ -795,7 +788,7 @@ html[data-theme="light"] .enter-btn:hover {
 
 html[data-theme="dark"] .scroll-down-btn {
     color: var(--dark-accent1);
-    box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+    box-shadow: 0 0 15px rgba(83, 109, 254, 0.3);
 }
 
 html[data-theme="light"] .scroll-down-btn {
@@ -861,7 +854,7 @@ html[data-theme="light"] .scroll-down-btn {
 }
 
 html[data-theme="dark"] .project-card:hover {
-    box-shadow: 0 15px 30px rgba(0, 230, 118, 0.3);
+    box-shadow: 0 15px 30px rgba(83, 109, 254, 0.3);
 }
 
 html[data-theme="light"] .project-card:hover {
@@ -908,7 +901,7 @@ html[data-theme="light"] .project-card:hover {
 
 html[data-theme="dark"] .project-tags span {
     color: var(--dark-accent1);
-    border: 1px solid rgba(0, 230, 118, 0.3);
+    border: 1px solid rgba(83, 109, 254, 0.3);
 }
 
 html[data-theme="light"] .project-tags span {
