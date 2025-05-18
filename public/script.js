@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             el.addEventListener('mouseleave', () => {
-                gsap.to(cursor, {width: 20, height: 20, duration: 0.3, ease: "elastic.out(1, 0.3)"});
+                gsap.to(cursor, {width: 24, height: 24, duration: 0.3, ease: "elastic.out(1, 0.3)"});
                 gsap.to(cursorFollower, {width: 40, height: 40, duration: 0.3, ease: "elastic.out(1, 0.3)"});
             });
         });
@@ -169,11 +169,11 @@ document.addEventListener('DOMContentLoaded', () => {
             directionalLight.position.set(5, 8, 5);
             scene.add(directionalLight);
             
-            pointLight1 = new THREE.PointLight(0x00E676, 0.8, 100);
+            pointLight1 = new THREE.PointLight(0x536DFE, 0.8, 100);
             pointLight1.position.set(2, 2, 2);
             scene.add(pointLight1);
             
-            pointLight2 = new THREE.PointLight(0x536DFE, 0.8, 100);
+            pointLight2 = new THREE.PointLight(0xFF4081, 0.8, 100);
             pointLight2.position.set(-2, -2, 2);
             scene.add(pointLight2);
             
@@ -219,8 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Neural network core
         const coreGeometry = new THREE.IcosahedronGeometry(0.3, 2);
         const coreMaterial = new THREE.MeshPhysicalMaterial({
-            color: 0x00E676,
-            emissive: 0x00E676,
+            color: 0xFF4081, // Pink
+            emissive: 0xFF4081,
             emissiveIntensity: 0.6,
             metalness: 0.9,
             roughness: 0.2,
@@ -234,16 +234,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Neural network nodes
         const nodeGeometry = new THREE.SphereGeometry(0.04, 10, 10);
         const nodeMaterial = new THREE.MeshPhysicalMaterial({ 
-            color: 0x00E676, 
-            emissive: 0x00E676, 
+            color: 0x536DFE, // Blue
+            emissive: 0x536DFE, 
             emissiveIntensity: 0.7,
             metalness: 0.8,
             roughness: 0.2,
             envMap: envMap
         });
         const nodeMaterialAlt = new THREE.MeshPhysicalMaterial({ 
-            color: 0x536DFE, 
-            emissive: 0x536DFE, 
+            color: 0xFF4081, // Pink
+            emissive: 0xFF4081, 
             emissiveIntensity: 0.5,
             metalness: 0.8,
             roughness: 0.2,
@@ -278,12 +278,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Create neural connections between layers
         const lineMaterial = new THREE.LineBasicMaterial({ 
-            color: 0x00E676, 
+            color: 0xFF4081, // Pink
             transparent: true, 
             opacity: 0.15 
         });
         
-              // Connect each node to several nodes in the next layer
+        // Connect each node to several nodes in the next layer
         for (let layer = 0; layer < layers - 1; layer++) {
             const startIdx = layer === 0 ? 0 : nodesPerLayer.slice(0, layer).reduce((a, b) => a + b, 0);
             const endIdx = startIdx + nodesPerLayer[layer];
@@ -407,8 +407,8 @@ document.addEventListener('DOMContentLoaded', () => {
         civilModel.visible = currentTheme === 'light';
         
         if (currentTheme === 'dark') {
-            pointLight1.color.setHex(0x00E676);
-            pointLight2.color.setHex(0x536DFE);
+            pointLight1.color.setHex(0x536DFE); // Blue
+            pointLight2.color.setHex(0xFF4081); // Pink
             ambientLight.intensity = 0.7;
         } else {
             pointLight1.color.setHex(0x5D4037);
@@ -850,4 +850,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
