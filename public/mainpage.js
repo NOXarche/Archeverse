@@ -10,11 +10,11 @@ const firebaseConfig = {
   measurementId: "G-G2QJ69V5DN"
 };
 
-// Initialize Firebase (commented out until needed)
-// const app = firebase.initializeApp(firebaseConfig);
-// const analytics = firebase.analytics();
-// const db = firebase.firestore();
-// const storage = firebase.storage();
+
+const app = firebase.initializeApp(firebaseConfig);
+const analytics = firebase.analytics();
+ const db = firebase.firestore();
+const storage = firebase.storage();
 
 // Initialize libraries after DOM content loads
 document.addEventListener('DOMContentLoaded', function() {
