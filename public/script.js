@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
             pointLight2.position.set(-2, -2, 2);
             scene.add(pointLight2);
             
-            // Create Data Science Model (Network)
+            // Create Data Science Model (Neural Network)
             dataModel = createDataScienceModel();
             scene.add(dataModel);
 
@@ -212,11 +212,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Create Data Science Model (Network Visualization)
+    // Create Data Science Model (Neural Network Visualization)
     function createDataScienceModel() {
         const group = new THREE.Group();
         
-        // Core sphere
+        // Neural network core
         const coreGeometry = new THREE.IcosahedronGeometry(0.3, 2);
         const coreMaterial = new THREE.MeshPhysicalMaterial({
             color: 0x00E676,
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const core = new THREE.Mesh(coreGeometry, coreMaterial);
         group.add(core);
         
-        // Data nodes
+        // Neural network nodes
         const nodeGeometry = new THREE.SphereGeometry(0.04, 10, 10);
         const nodeMaterial = new THREE.MeshPhysicalMaterial({ 
             color: 0x00E676, 
@@ -250,49 +250,58 @@ document.addEventListener('DOMContentLoaded', () => {
             envMap: envMap
         });
         
+        // Create layered neural network structure
+        const layers = 4;
+        const nodesPerLayer = [8, 12, 12, 6];
+        const layerDistance = 0.5;
         const nodes = [];
-        const numNodes = 30;
-        const radius = 1.5;
         
-        for (let i = 0; i < numNodes; i++) {
-            const currentMaterial = i % 3 === 0 ? nodeMaterialAlt : nodeMaterial;
-            const node = new THREE.Mesh(nodeGeometry, currentMaterial);
-            
-            const phi = Math.acos(-1 + (2 * i) / numNodes);
-            const theta = Math.sqrt(numNodes * Math.PI) * phi * (1 + (Math.random() - 0.5) * 0.2);
-            
-            node.position.set(
-                radius * Math.cos(theta) * Math.sin(phi) * (0.7 + Math.random() * 0.6),
-                radius * Math.sin(theta) * Math.sin(phi) * (0.7 + Math.random() * 0.6),
-                radius * Math.cos(phi) * (0.7 + Math.random() * 0.6)
-            );
-            
-            nodes.push(node);
-            group.add(node);
+        for (let layer = 0; layer < layers; layer++) {
+            for (let i = 0; i < nodesPerLayer[layer]; i++) {
+                const currentMaterial = layer % 2 === 0 ? nodeMaterial : nodeMaterialAlt;
+                const node = new THREE.Mesh(nodeGeometry, currentMaterial);
+                
+                // Position nodes in a circular pattern within each layer
+                const angle = (i / nodesPerLayer[layer]) * Math.PI * 2;
+                const radius = 0.6 + Math.random() * 0.2;
+                
+                node.position.set(
+                    Math.cos(angle) * radius,
+                    (layer - (layers/2) + 0.5) * layerDistance,
+                    Math.sin(angle) * radius
+                );
+                
+                nodes.push(node);
+                group.add(node);
+            }
         }
         
-        // Create connections between nodes
+        // Create neural connections between layers
         const lineMaterial = new THREE.LineBasicMaterial({ 
             color: 0x00E676, 
             transparent: true, 
             opacity: 0.15 
         });
         
-        for (let i = 0; i < nodes.length; i++) {
-            const numConnections = Math.floor(Math.random() * 3) + 1;
-            for (let j = 0; j < numConnections; j++) {
-                let targetNode = nodes[Math.floor(Math.random() * nodes.length)];
-                let attempts = 0;
-                while (targetNode === nodes[i] && attempts < 5) {
-                    targetNode = nodes[Math.floor(Math.random() * nodes.length)];
-                    attempts++;
-                }
+        // Connect each node to several nodes in the next layer
+        for (let layer = 0; layer < layers - 1; layer++) {
+            const startIdx = layer === 0 ? 0 : nodesPerLayer.slice(0, layer).reduce((a, b) => a + b, 0);
+            const endIdx = startIdx + nodesPerLayer[layer];
+            const nextLayerStart = endIdx;
+            const nextLayerEnd = nextLayerStart + nodesPerLayer[layer + 1];
+            
+            for (let i = startIdx; i < endIdx; i++) {
+                const connectionsCount = Math.floor(Math.random() * 3) + 2;
                 
-                if (targetNode !== nodes[i]) {
-                    const points = [nodes[i].position.clone(), targetNode.position.clone()];
-                    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                    const line = new THREE.Line(geometry, lineMaterial);
-                    group.add(line);
+                for (let c = 0; c < connectionsCount; c++) {
+                    const targetIdx = nextLayerStart + Math.floor(Math.random() * nodesPerLayer[layer + 1]);
+                    
+                    if (targetIdx < nextLayerEnd) {
+                        const points = [nodes[i].position.clone(), nodes[targetIdx].position.clone()];
+                        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                        const line = new THREE.Line(geometry, lineMaterial);
+                        group.add(line);
+                    }
                 }
             }
         }
@@ -418,7 +427,8 @@ document.addEventListener('DOMContentLoaded', () => {
             dataModel.rotation.x += 0.001;
             dataModel.rotation.y += (mouseX * 0.02 - dataModel.rotation.y) * 0.04;
             dataModel.rotation.x += (mouseY * 0.02 - dataModel.rotation.x) * 0.04;
-                        // Animate data nodes
+            
+            // Animate data nodes
             dataModel.children.forEach(child => {
                 if (child instanceof THREE.Mesh && child.geometry.type === 'SphereGeometry' && child.geometry.parameters.radius < 0.1) {
                     child.position.x += Math.sin(clock.elapsedTime * (Math.random() * 0.5 + 0.5) + child.id * 0.1) * 0.0005;
@@ -683,7 +693,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mask.style.opacity = '0';
             mask.style.filter = 'blur(30px)';
             document.body.appendChild(mask);
-
+            
             // Enhanced mask animation with ripple effect
             gsap.to(mask, {
                 opacity: 0.8,
@@ -764,6 +774,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // Scroll down button functionality
+    const scrollDownBtn = document.querySelector('.scroll-down-btn');
+    if (scrollDownBtn) {
+        scrollDownBtn.addEventListener('click', () => {
+            const featuredSection = document.querySelector('.featured-projects');
+            if (featuredSection) {
+                featuredSection.scrollIntoView({ behavior: 'smooth' });
+                
+                if (soundEnabled) {
+                    clickSound.currentTime = 0;
+                    clickSound.play();
+                }
+            }
+        });
+    }
+    
     // Initialize everything
     function initializeAnimations() {
         initThreeJS();
@@ -806,5 +832,3 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
-           
