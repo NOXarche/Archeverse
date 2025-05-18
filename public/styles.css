@@ -84,6 +84,24 @@ html[data-theme="light"] body {
     background-size: 120px 120px;
 }
 
+/* Bridge Background */
+.bridge-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-image: url('images/illuminated-bridge.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity var(--transition) ease;
+}
+
+html[data-theme="dark"] .bridge-bg {
+    opacity: 0.25;
+}
+
 /* Preloader with elegant animation */
 .preloader {
     position: fixed;
@@ -573,12 +591,13 @@ html[data-theme="light"] .skill-icon {
 .enter-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    padding: 12px 25px;
+    padding: 14px 28px;
     border: none;
     border-radius: 12px;
     font-family: var(--font-heading);
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: var(--semi-bold);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -586,6 +605,8 @@ html[data-theme="light"] .skill-icon {
     width: fit-content;
     min-width: var(--min-tap-target);
     min-height: var(--min-tap-target);
+    position: relative;
+    overflow: hidden;
 }
 
 html[data-theme="dark"] .enter-btn {
@@ -616,6 +637,81 @@ html[data-theme="light"] .enter-btn:hover {
 
 .enter-btn:hover i {
     transform: translateX(5px);
+}
+
+.enter-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s ease;
+}
+
+.enter-btn:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Scroll Down Button */
+.scroll-down-container {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.scroll-down-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: bounce 2s infinite;
+    color: var(--dark-text);
+    font-size: 1.2rem;
+}
+
+html[data-theme="dark"] .scroll-down-btn {
+    color: var(--dark-accent1);
+    box-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+}
+
+html[data-theme="light"] .scroll-down-btn {
+    color: var(--bright-accent1);
+    box-shadow: 0 0 15px rgba(93, 64, 55, 0.3);
+}
+
+.scroll-down-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
 }
 
 /* Featured Projects Section */
@@ -756,6 +852,18 @@ html[data-theme="light"] .grid {
         linear-gradient(to bottom, var(--bright-accent1) 1px, transparent 1px);
 }
 
+.ai-visualization {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity var(--transition) ease;
+}
+
+html[data-theme="dark"] .ai-visualization {
+    opacity: 0.15;
+}
+
 .skyscrapers {
     position: absolute;
     width: 100%;
@@ -894,6 +1002,9 @@ html[data-theme="light"] .footer-links a:hover {
     .container {
         flex-direction: column;
         text-align: center;
+        height: auto;
+        min-height: 100vh;
+        padding: 4rem 1rem;
     }
     
     .model-container, .content {
@@ -903,10 +1014,12 @@ html[data-theme="light"] .footer-links a:hover {
     .model-container {
         height: 40vh;
         min-height: 300px;
+        order: 1;
     }
     
     .content {
         padding: 2rem 1rem;
+        order: 2;
     }
     
     .logo {
@@ -926,16 +1039,26 @@ html[data-theme="light"] .footer-links a:hover {
     }
     
     .projects-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
     }
     
     .footer-content {
         flex-direction: column;
         text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .scroll-down-container {
+        bottom: 20px;
     }
 }
 
 @media (max-width: 768px) {
+    .container {
+        padding: 2rem 1rem;
+    }
+    
     .logo {
         font-size: 2.5rem;
     }
@@ -981,9 +1104,34 @@ html[data-theme="light"] .footer-links a:hover {
     
     .section-title {
         font-size: 2rem;
+        margin-bottom: 1.5rem;
     }
     
     .projects-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .featured-projects {
+        padding: 3rem 1rem;
+    }
+    
+    .sound-toggle {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .model-container {
+        height: 30vh;
+    }
+}
+
+/* Tablet-specific optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .model-container {
+        height: 35vh;
     }
 }
